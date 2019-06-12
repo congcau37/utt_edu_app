@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".student.fragment.SubjectFragment">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <LinearLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="@dimen/toolbar_back_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_button_back"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_arrow_back_white_24dp" />
+
+            <TextView
+                android:id="@+id/tvTitleToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/font_size_medium"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/ivAdd"
+                android:background="@drawable/selector_button_back"
+                android:src="@drawable/ic_add"
+                android:scaleType="centerInside"
+                android:layout_gravity="right|center_vertical"
+                android:layout_width="@dimen/toolbar_add_width"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <RadioGroup
+        android:id="@+id/rdg_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:weightSum="3"
+        android:paddingLeft="@dimen/app_margin_large"
+        android:layout_margin="@dimen/app_margin_small"
+        android:orientation="horizontal"
+        >
+        <RadioButton
+            android:id="@+id/rbEasy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dễ"
+            />
+        <RadioButton
+            android:id="@+id/rbMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Trung bình"
+            />
+        <RadioButton
+            android:id="@+id/rbHard"
+            android:layout_width="0dp"
+            android:layout_marginLeft="@dimen/app_margin_small"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Khó"
+            />
+    </RadioGroup>
+
+    <View
+        android:background="@color/colorGray"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dip" />
+
+    <TextView
+        android:id="@+id/tvNoHaveTest"
+        android:textColor="@color/colorAccent"
+        android:text="Chưa có đề thi!"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        android:layout_margin="@dimen/app_margin_small"
+        android:textSize="@dimen/font_size_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcvTest"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/app_margin_small"></android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

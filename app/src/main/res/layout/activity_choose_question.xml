@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".admin.activity.ChooseQuestionActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <LinearLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="@dimen/toolbar_back_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_button_back"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_arrow_back_white_24dp" />
+
+            <TextView
+                android:id="@+id/tvTitleToolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/color_white"
+                android:layout_marginRight="50dp"
+                android:textSize="@dimen/font_size_medium"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/cbCheckedAll"
+            android:text="Tất cả"
+            android:textSize="@dimen/font_size_small"
+            android:layout_margin="@dimen/app_margin_small"
+            android:layout_width="100dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <CheckBox
+            android:id="@+id/cbChecked"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_margin="@dimen/app_margin_small"
+            android:text="Đã chọn"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_size_small" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_row_height"
+        android:background="@color/colorGray" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcvQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/tvNoSelectQuestion"
+        android:text="Chưa chọn câu hỏi nào"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:textSize="@dimen/font_size_small"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/btDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/app_margin_small"
+        android:background="@drawable/selector_button_login"
+        android:text="Xong"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/font_size_small" />
+</LinearLayout>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.TestDoneActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <LinearLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="@dimen/toolbar_back_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_button_back"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_arrow_back_white_24dp" />
+
+            <TextView
+                android:id="@+id/tvTitleToolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginRight="50dp"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/font_size_medium"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/app_margin_small"
+        android:layout_below="@+id/appBar"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:textSize="@dimen/font_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Câu đúng" />
+
+            <TextView
+                android:id="@+id/txt_true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_size_medium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="0" />
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="@dimen/app_margin_small"
+            android:background="@color/colorGray"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dip" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:textSize="@dimen/font_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Câu sai" />
+
+            <TextView
+                android:id="@+id/txt_fail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_size_medium"
+                android:gravity="right"
+                android:text="0" />
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="@dimen/app_margin_small"
+            android:background="@color/colorGray"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dip" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:textSize="@dimen/font_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Câu chưa trả lời" />
+
+            <TextView
+                android:id="@+id/txt_unanswered"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_size_medium"
+                android:gravity="right"
+                android:text="0" />
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="@dimen/app_margin_small"
+            android:background="@color/colorGray"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dip" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:textSize="@dimen/font_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tổng điểm" />
+
+            <TextView
+                android:id="@+id/txt_total_point"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/font_size_medium"
+                android:gravity="right"
+                android:text="0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom">
+
+            <Button
+                android:id="@+id/btn_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:layout_marginLeft="@dimen/app_margin_small"
+                android:layout_weight="1"
+                android:textColor="@color/color_white"
+                android:background="@drawable/selector_btn_cancel"
+                android:text="Thoát" />
+
+            <Button
+                android:id="@+id/btn_save_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:textColor="@color/color_white"
+                android:background="@drawable/selector_button_login"
+                android:text="Lưu điểm" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

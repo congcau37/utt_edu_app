@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".admin.activity.EditTestActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <LinearLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="@dimen/toolbar_back_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_button_back"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_arrow_back_white_24dp" />
+
+            <TextView
+                android:id="@+id/tvTitleToolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/font_size_medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSave"
+                android:layout_width="@dimen/toolbar_add_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center_vertical"
+                android:gravity="center"
+                android:scaleType="centerInside"
+                android:text="Lưu"
+                android:textColor="@color/color_white"
+                android:background="@drawable/selector_button_back"
+                android:textSize="@dimen/font_size_medium" />
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/app_margin_small"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:text="Tên đề thi"
+                android:textSize="@dimen/font_size_small" />
+
+            <EditText
+                android:id="@+id/etTestName"
+                android:text=""
+                android:textSize="@dimen/font_size_small"
+                android:paddingLeft="@dimen/app_margin_small"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/bg_et_input"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_row_height"
+            android:background="@color/colorGray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginRight="@dimen/app_margin_small"
+            android:layout_marginTop="@dimen/app_margin_small"
+            android:layout_marginBottom="@dimen/app_margin_small"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:paddingLeft="@dimen/app_margin_small"
+                android:text="Môn học"
+                android:textSize="@dimen/font_size_small" />
+
+            <Spinner
+                android:id="@+id/spnSubject"
+                android:visibility="gone"
+                android:textColor="@color/colorBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <TextView
+                android:id="@+id/tvSubject"
+                android:visibility="visible"
+                android:text=""
+                android:textSize="@dimen/font_size_small"
+                android:paddingLeft="@dimen/app_margin_small"
+                android:textColor="@color/colorBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_row_height"
+            android:background="@color/colorGray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginRight="@dimen/app_margin_small"
+            android:layout_marginTop="@dimen/app_margin_small"
+            android:layout_marginBottom="@dimen/app_margin_small"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:paddingLeft="@dimen/app_margin_small"
+                android:text="Cấp độ"
+                android:textSize="@dimen/font_size_small" />
+
+            <Spinner
+                android:id="@+id/spnLevel"
+                android:textColor="@color/colorBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_row_height"
+            android:background="@color/colorGray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/app_margin_small"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:text="Số câu"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:id="@+id/tvQuestionNumber"
+                android:text="0"
+                android:textSize="@dimen/font_size_small"
+                android:textColor="@color/colorBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_row_height"
+            android:background="@color/colorGray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/app_margin_small"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:text="Thời gian"
+                android:textSize="@dimen/font_size_small" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left"
+                >
+
+                <EditText
+                    android:id="@+id/etTime"
+                    android:layout_width="60dp"
+                    android:paddingRight="@dimen/app_margin_small"
+                    android:paddingLeft="@dimen/app_margin_small"
+                    android:layout_marginLeft="@dimen/app_margin_small"
+                    android:layout_marginRight="@dimen/app_margin_small"
+                    android:layout_toRightOf="@id/ivSub"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_et_input"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    tools:ignore="LabelFor"
+                    android:inputType="number"
+                    android:text="0"
+                    android:layout_centerVertical="true"/>
+
+                <ImageView
+                    android:id="@+id/ivSub"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/selector_circle_color"
+                    android:src="@drawable/ic_circle_sub"
+                    android:visibility="visible" />
+                <ImageView
+                    android:id="@+id/ivPlus"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/etTime"
+                    android:background="@drawable/selector_circle_color"
+                    android:src="@drawable/ic_circle_plus"
+                    android:visibility="visible" />
+                <TextView
+                    android:text="(Phút)"
+                    android:layout_marginLeft="@dimen/app_margin_small"
+                    android:layout_toRightOf="@id/ivPlus"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_row_height"
+            android:background="@color/colorGray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/app_margin_small"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:text="Câu hỏi"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:id="@+id/tvQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/colorBlack"
+                android:layout_weight="1"
+                android:background="@drawable/bg_et_input"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/app_margin_small"
+                android:gravity="center"
+                android:maxEms="15"
+                android:singleLine="true"
+                android:text="..."
+                android:textSize="@dimen/font_size_small" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

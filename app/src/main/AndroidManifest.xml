@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="congdev37.edu.uttedudemo">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".admin.activity.ChooseQuestionActivity"></activity>
+        <activity android:name=".admin.activity.EditTestActivity" />
+        <activity android:name=".admin.activity.AddTestActivity" />
+        <activity android:name=".student.activity.TestActivity" />
+        <activity android:name=".student.activity.TestDoneActivity" />
+        <activity android:name=".student.slide.ScreenSlideActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".login.LoginActivity">
+
+        </activity>
+        <activity
+            android:name=".login.ScanBarcodeActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SplashActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

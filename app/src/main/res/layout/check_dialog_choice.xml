@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@drawable/q_a"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="520dp">
+
+    <GridView
+        android:numColumns="3"
+        android:id="@+id/grv_choice"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"></GridView>
+    <LinearLayout
+        android:gravity="center"
+        android:layout_margin="@dimen/app_margin_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:text="Đóng"
+            android:id="@+id/btn_close_grv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_marginRight="@dimen/app_margin_small"
+            android:layout_weight="1"
+            android:textColor="@color/color_white"
+            android:background="@drawable/selector_btn_cancel" />
+
+        <Button
+            android:id="@+id/btn_finish_grv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/app_margin_small"
+            android:textColor="@color/color_white"
+            android:background="@drawable/selector_button_login"
+            android:text="Nạp bài" />
+    </LinearLayout>
+</LinearLayout>

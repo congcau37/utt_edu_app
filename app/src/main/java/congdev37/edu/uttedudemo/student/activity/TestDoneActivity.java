@@ -88,48 +88,22 @@ public class TestDoneActivity extends AppCompatActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                builderConfirm = new AlertDialog.Builder(TestDoneActivity.this);
-                builderConfirm.setMessage("Bạn có muốn thoát mà không lưu điểm");
-                builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-                builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                builderConfirm.show();
+                dialogExit();
             }
         });
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                builderConfirm = new AlertDialog.Builder(TestDoneActivity.this);
-                builderConfirm.setMessage("Bạn có muốn thoát mà không lưu điểm");
-                builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-                builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                builderConfirm.show();
+              dialogExit();
             }
         });
         btnSavePoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final Dialog builder = new Dialog(TestDoneActivity.this,R.style.Theme_Dialog);
+                getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 builder.setContentView(R.layout.alert_dialog_saver_point);
-                getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 builder.setCancelable(true);
                 builder.setCanceledOnTouchOutside(true);
 
@@ -238,5 +212,27 @@ public class TestDoneActivity extends AppCompatActivity {
             listAns.add(listQuestion.get(i).getAnswer());
         }
         return listAns;
+    }
+
+    @Override
+    public void onBackPressed() {
+        dialogExit();
+    }
+
+    public void dialogExit(){
+        builderConfirm = new AlertDialog.Builder(TestDoneActivity.this);
+        builderConfirm.setMessage("Bạn có muốn thoát mà không lưu điểm");
+        builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        builderConfirm.show();
     }
 }

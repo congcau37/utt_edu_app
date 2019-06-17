@@ -27,7 +27,7 @@ import congdev37.edu.uttedudemo.admin.fragment.SubjectManagerFragment;
 import congdev37.edu.uttedudemo.model.Student;
 import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
-import congdev37.edu.uttedudemo.student.fragment.AccountFragment;
+import congdev37.edu.uttedudemo.student.fragment.ChangePasswordFragment;
 import congdev37.edu.uttedudemo.student.fragment.ExerciseFragment;
 import congdev37.edu.uttedudemo.student.fragment.ProfileStudentFragment;
 import congdev37.edu.uttedudemo.student.fragment.SubjectFragment;
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.navChangePass) {
             titleToolbar.setText("Đổi mật khẩu");
             hideItemAdd();
-            initFragment(new AccountFragment());
+            initFragment(new ChangePasswordFragment());
         } else if (id == R.id.navLogout) {
             finish();
         }

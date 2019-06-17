@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,14 +27,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import congdev37.edu.uttedudemo.R;
-import congdev37.edu.uttedudemo.admin.adapter.CustomAdapter;
 import congdev37.edu.uttedudemo.model.Question;
 import congdev37.edu.uttedudemo.model.Subject;
 import congdev37.edu.uttedudemo.response.ResponseMessage;
 import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
 import congdev37.edu.uttedudemo.student.activity.TestActivity;
-import congdev37.edu.uttedudemo.student.activity.TestDoneActivity;
 import congdev37.edu.uttedudemo.student.fragment.SubjectFragment;
 import congdev37.edu.uttedudemo.util.ConstantKey;
 import congdev37.edu.uttedudemo.util.Converter;
@@ -82,6 +81,13 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     int time = 0;
     String subjectCode;
     String questionID;
+    @BindView(R.id.btnExit)
+    Button btnExit;
+    @BindView(R.id.btnSave)
+    Button btnSave;
+
+    String testName;
+    String Error = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,9 +139,12 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().equals(null) || s.toString().equals("")) {
+                if (time < 0 || s.toString().equals("")) {
                     time = 0;
                     etTime.setText("0");
+                } else if (time >= 120) {
+                    time = 120;
+                    etTime.setText("120");
                 } else {
                     time = Integer.parseInt(s.toString());
                 }
@@ -157,14 +166,18 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
-    @OnClick({R.id.ivBack, R.id.tvSave, R.id.ivSub, R.id.ivPlus, R.id.tvQuestion})
+    @OnClick({R.id.ivBack, R.id.tvSave, R.id.ivSub, R.id.ivPlus, R.id.tvQuestion, R.id.btnExit, R.id.btnSave})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btnExit:
             case R.id.ivBack:
                 showDialogConfirm();
                 break;
+            case R.id.btnSave:
             case R.id.tvSave:
-                saveNewTest();
+                if (validateForm()) {
+                    saveNewTest();
+                }
                 break;
             case R.id.ivSub:
                 etTime.setText(subTime() + "");
@@ -184,7 +197,7 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
     private void showDialogConfirm() {
         builderConfirm = new AlertDialog.Builder(AddTestActivity.this);
-        builderConfirm.setMessage("Bạn có muốn hủy bài test");
+        builderConfirm.setMessage("Bạn có muốn hủy bài test không?");
         builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -200,18 +213,6 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private void saveNewTest() {
-        subjectCode = TestActivity.subCode;
-        String testName = etTestName.getText().toString().trim();
-        String time = etTime.getText().toString().trim();
-        if (time.equals("0")) {
-            Toast.makeText(this, "Bạn chưa thiết lập thời gian", Toast.LENGTH_SHORT).show();
-        }
-        if (testName.equals("")) {
-            Toast.makeText(this, "Tên đề thi không được để trống", Toast.LENGTH_SHORT).show();
-        }
-        if (tvQuestion.getText().toString().equals("...")) {
-            Toast.makeText(this, "Bạn chưa chọn câu hỏi", Toast.LENGTH_SHORT).show();
-        }
         mService = ApiUtils.getSOService();
         Map<String, Object> params = new HashMap<>();
         params.put("questionID", questionID);
@@ -249,6 +250,24 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
+    private boolean validateForm() {
+        subjectCode = TestActivity.subCode;
+        testName = etTestName.getText().toString().trim();
+        if (time == 0) {
+            Toast.makeText(this, "Bạn chưa thiết lập thời gian", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (testName.equals("")) {
+            Toast.makeText(this, "Tên đề thi không được để trống", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (tvQuestion.getText().toString().equals("...")) {
+            Toast.makeText(this, "Bạn chưa chọn câu hỏi", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -281,15 +300,23 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private int plusTime() {
+        if (time >= 120) {
+            return 120;
+        }
         time += 5;
         return time;
     }
 
     private int subTime() {
-        if (time == 0) {
+        if (time < 0) {
             return 0;
         }
         time -= 5;
         return time;
+    }
+
+    @Override
+    public void onBackPressed() {
+        showDialogConfirm();
     }
 }

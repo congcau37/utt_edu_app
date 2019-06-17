@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,9 @@ public class SubjectFragment extends Fragment {
     RecyclerView rcvTest;
 
     public static String subName;
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
+
     public SubjectFragment() {
         // Required empty public constructor
     }
@@ -67,7 +71,7 @@ public class SubjectFragment extends Fragment {
     private void initView(View view) {
         mDataSubject = new ArrayList<>();
         mAdapter = new SubjectAdapter(mDataSubject);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 1);
         rcvTest.setLayoutManager(gridLayoutManager);
         rcvTest.setAdapter(mAdapter);
         mAdapter.setOnClick(new SubjectAdapter.OnClick() {
@@ -75,7 +79,7 @@ public class SubjectFragment extends Fragment {
             public void onItemClick(String subCode) {
                 Intent intent = new Intent(getContext(), TestActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("sub_code",subCode);
+                bundle.putString("sub_code", subCode);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -101,11 +105,13 @@ public class SubjectFragment extends Fragment {
                         subject.setSubjectName(item.getSubjectName());
                         mDataSubject.add(subject);
                     }
+                    setInvisibleLoading();
                     mAdapter.notifyDataSetChanged();
                 } else {
                     int statusCode = response.code();
                 }
             }
+
             @Override
             public void onFailure(Call<List<Subject>> call, Throwable t) {
 
@@ -117,5 +123,9 @@ public class SubjectFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    public void setInvisibleLoading() {
+        pbLoading.setVisibility(View.INVISIBLE);
     }
 }

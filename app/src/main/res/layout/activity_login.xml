@@ -58,7 +58,7 @@
                 android:maxLines="1"
                 android:layout_marginRight="@dimen/app_margin_small"
                 android:paddingLeft="@dimen/app_margin_small"
-                android:text="admin"
+                android:text="66dcht22447"
                 android:textColor="@android:color/black" />
 
             <ImageView
@@ -108,7 +108,7 @@
 
         <TextView
             android:gravity="center"
-            android:text="Bạn chưa có tài khản?"
+            android:text="Bạn chưa có tài khoản?"
             android:layout_margin="@dimen/app_margin_small"
             android:layout_width="match_parent"
             android:textColor="@color/colorGray"

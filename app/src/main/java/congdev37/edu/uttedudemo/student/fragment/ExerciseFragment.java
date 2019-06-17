@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -50,8 +51,11 @@ public class ExerciseFragment extends Fragment {
     RadioButton rbYear;
     @BindView(R.id.rdg_date)
     RadioGroup rdgDate;
+    @BindView(R.id.pbLoading)
+    FrameLayout pbLoading;
     Unbinder unbinder;
     TimeHelper timeHelper;
+
 
     public ExerciseFragment() {
         // Required empty public constructor
@@ -82,11 +86,11 @@ public class ExerciseFragment extends Fragment {
         rdgDate.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId==R.id.rbToday){
+                if (checkedId == R.id.rbToday) {
                     TimeHelper.getInstance().getToday();
-                }else if(checkedId==R.id.rbMonth){
+                } else if (checkedId == R.id.rbMonth) {
                     TimeHelper.getInstance().getThisMonth();
-                }else {
+                } else {
 
                 }
             }
@@ -117,6 +121,7 @@ public class ExerciseFragment extends Fragment {
                         history.setSubjectName("");
                         mData.add(history);
                     }
+                    setInvisibleLoading();
                     adapter.notifyDataSetChanged();
                 } else {
                     int statusCode = response.code();
@@ -167,5 +172,13 @@ public class ExerciseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    public void setInvisibleLoading() {
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    public void setVisibleLoading() {
+        pbLoading.setVisibility(View.VISIBLE);
     }
 }

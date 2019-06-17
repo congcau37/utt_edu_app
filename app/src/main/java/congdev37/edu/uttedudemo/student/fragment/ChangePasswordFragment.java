@@ -29,7 +29,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment {
+public class ChangePasswordFragment extends Fragment {
 
     View view;
     String stdCode;
@@ -38,7 +38,7 @@ public class AccountFragment extends Fragment {
     SOService mService;
     ArrayList<User> dataUser;
 
-    public AccountFragment() {
+    public ChangePasswordFragment() {
         // Required empty public constructor
     }
 

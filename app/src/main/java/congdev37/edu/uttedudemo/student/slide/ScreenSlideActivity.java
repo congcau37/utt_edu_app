@@ -207,7 +207,7 @@ public class ScreenSlideActivity extends FragmentActivity {
         gvCheckAnswer = (GridView) dialog.findViewById(R.id.grv_choice);
         btnCloseGrv = (Button) dialog.findViewById(R.id.btn_close_grv);
         btnFinishGrv = (Button) dialog.findViewById(R.id.btn_finish_grv);
-        checkAnswerAdapter = new CheckAnswerAdapter(getApplication(), R.layout.custom_dialog_choice, listQuestion);
+        checkAnswerAdapter = new CheckAnswerAdapter(getApplication(), R.layout.item_dialog_choice, listQuestion);
         gvCheckAnswer.setAdapter(checkAnswerAdapter);
         gvCheckAnswer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -263,4 +263,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         }
     }
+
+
 }

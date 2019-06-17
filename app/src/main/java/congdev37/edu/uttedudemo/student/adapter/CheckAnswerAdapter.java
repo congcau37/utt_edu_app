@@ -54,7 +54,7 @@ public class CheckAnswerAdapter extends BaseAdapter {
         }
         int j = i+1;
         Question questionModel = lsData.get(i);
-        viewHolder.txtNumberQuestion.setText("Câu:"+j);
+        viewHolder.txtNumberQuestion.setText(j+"");
         viewHolder.txtYourAnswer.setText(questionModel.getAnswer());
         return view;
     }

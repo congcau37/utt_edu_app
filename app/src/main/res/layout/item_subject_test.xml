@@ -4,7 +4,7 @@
     android:layout_height="100dp"
     android:layout_margin="@dimen/app_margin_small"
     android:id="@+id/llSubjectTest"
-    android:background="@drawable/bg_item_subject">
+    android:background="@drawable/selector_item_list">
 
     <ImageView
         android:id="@+id/ivIcon"
@@ -19,8 +19,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textSize="@dimen/font_size_small"
-        android:text="aaaaa"
+        android:textSize="@dimen/font_size_medium"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:layout_weight="1"
         android:padding="10dp"
         android:paddingLeft="5sp"
@@ -37,7 +38,7 @@
 
     <TextView
         android:id="@+id/tvTimeQuestion"
-        android:text=" (phút/câu)"
+        android:text=" (câu/phút)"
         android:textSize="12dp"
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="@dimen/app_margin_small"

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -13,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.model.Student;
 import congdev37.edu.uttedudemo.service.ApiUtils;
@@ -26,9 +30,26 @@ import static congdev37.edu.uttedudemo.MainActivity.stdCode;
 public class ProfileStudentFragment extends Fragment {
 
     View view;
-    TextView txtName,txtCode,txtPhone,txtClass,txtBirthday,txtAdd,txtGender;
+    TextView txtName, txtCode, txtPhone, txtClass, txtBirthday, txtAdd, txtGender;
     SOService mService;
     ArrayList<Student> dataStudent;
+    @BindView(R.id.txt_std_name)
+    TextView txtStdName;
+    @BindView(R.id.txt_std_code)
+    TextView txtStdCode;
+    @BindView(R.id.txt_std_birthday)
+    TextView txtStdBirthday;
+    @BindView(R.id.txt_std_phone)
+    TextView txtStdPhone;
+    @BindView(R.id.txt_std_address)
+    TextView txtStdAddress;
+    @BindView(R.id.txt_std_class)
+    TextView txtStdClass;
+    @BindView(R.id.txt_std_gender)
+    TextView txtStdGender;
+    @BindView(R.id.pbLoading)
+    FrameLayout pbLoading;
+    Unbinder unbinder;
 
 
     public static ProfileStudentFragment newInstance() {
@@ -43,6 +64,7 @@ public class ProfileStudentFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_profile_student, container, false);
         initView();
         loadProfileStudent();
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -57,7 +79,8 @@ public class ProfileStudentFragment extends Fragment {
         dataStudent = new ArrayList<>();
 
     }
-    private void initData(){
+
+    private void initData() {
         txtName.setText(dataStudent.get(0).getStdName());
         txtAdd.setText(dataStudent.get(0).getAddress());
         txtClass.setText(dataStudent.get(0).getClass_());
@@ -65,6 +88,7 @@ public class ProfileStudentFragment extends Fragment {
         txtPhone.setText(dataStudent.get(0).getPhoneNumber());
         txtCode.setText(dataStudent.get(0).getStdCode());
         txtGender.setText(dataStudent.get(0).getGender());
+        setVisibleLoading();
     }
 
     private void loadProfileStudent() {
@@ -106,4 +130,17 @@ public class ProfileStudentFragment extends Fragment {
         });
     }
 
+    public void setInvisibleLoading() {
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    public void setVisibleLoading() {
+        pbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }

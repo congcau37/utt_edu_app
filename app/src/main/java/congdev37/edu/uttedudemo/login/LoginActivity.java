@@ -1,6 +1,7 @@
 package congdev37.edu.uttedudemo.login;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     SOService mService;
     private static final int RESULT_OK = 1;
     BroadcastReceiver receiver;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showDialogLoading();
                 checkAccount();
             }
         });
@@ -109,24 +112,29 @@ public class LoginActivity extends AppCompatActivity {
                             bundle.putString("permission", permission);
                             bundle.putString("code", etAccount.getText().toString());
                             intent.putExtras(bundle);
+                            hideDialogLoading();
                             startActivity(intent);
-                        }else {
+                        } else {
                             permission = "student";
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("permission", permission);
                             bundle.putString("code", etAccount.getText().toString());
                             intent.putExtras(bundle);
+                            hideDialogLoading();
                             startActivity(intent);
                         }
                     } else {
+                        hideDialogLoading();
                         Toast.makeText(LoginActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     int statusCode = response.code();
                     if (statusCode == 404) {
+                        hideDialogLoading();
                         Toast.makeText(LoginActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
                     } else {
+                        hideDialogLoading();
                         Toast.makeText(LoginActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -167,5 +175,17 @@ public class LoginActivity extends AppCompatActivity {
             unregisterReceiver(receiver);
         }
         super.onDestroy();
+    }
+
+    public void showDialogLoading() {
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Đang đăng nhập...");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
+    }
+
+    public void hideDialogLoading() {
+        dialog.hide();
     }
 }

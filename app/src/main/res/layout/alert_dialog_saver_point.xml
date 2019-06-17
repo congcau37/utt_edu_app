@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:stretchColumns="*"
+    android:background="@color/color_white"
     android:layout_height="match_parent">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
@@ -209,6 +210,6 @@
             android:layout_marginLeft="@dimen/app_margin_small"
             android:textColor="@color/color_white"
             android:background="@drawable/selector_button_login"
-            android:text="Nạp bài" />
+            android:text="Nộp bài" />
     </LinearLayout>
 </TableLayout>

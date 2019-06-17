@@ -68,7 +68,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
 
         public void initView(final Test test, final int position) {
             tvName.setText(test.getTestName());
-            tvTimerQuestion.setText(test.getTime()+"/"+ Converter.splitQuestionID(test.getQuestionID()).size());
+            tvTimerQuestion.setText(Converter.splitQuestionID(test.getQuestionID()).size()+"/"+test.getTime());
             if(Helper.getActivity(mContext) instanceof TestActivity){
                 ivIcon.setImageResource(R.drawable.ic_test);
             }

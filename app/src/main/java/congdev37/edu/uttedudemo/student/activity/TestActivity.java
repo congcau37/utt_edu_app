@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -65,6 +66,8 @@ public class TestActivity extends AppCompatActivity {
     TextView tvNoHaveTest;
     @BindView(R.id.ivAdd)
     ImageView ivAdd;
+    @BindView(R.id.pbLoading)
+    FrameLayout pbLoading;
 
     public static String subCode;
     SOService mService;
@@ -79,6 +82,7 @@ public class TestActivity extends AppCompatActivity {
     boolean check;
     TestAdapter mAdapter;
     BroadcastReceiver myBroadCast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,7 @@ public class TestActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             try {
+                level = "1";
                 subCode = bundle.getString("sub_code");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -107,7 +112,7 @@ public class TestActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        if(!MainActivity.stdCode.equals("admin")){
+        if (!MainActivity.stdCode.equals("admin")) {
             ivAdd.setVisibility(View.INVISIBLE);
         }
         tvTitleToolbar.setText("Bài test");
@@ -145,6 +150,7 @@ public class TestActivity extends AppCompatActivity {
                 } else {
                     level = "3";
                 }
+                setVisibleLoading();
                 loadTest(level);
             }
         });
@@ -174,14 +180,21 @@ public class TestActivity extends AppCompatActivity {
                         mDataTest.add(test);
                     }
                     if (mDataTest.size() == response.body().size() && !MainActivity.stdCode.equals("admin")) {
-                        checkTestStatus();
+                        if (mDataTest.size() == 0) {
+                            setInvisibleLoading();
+                            tvNoHaveTest.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNoHaveTest.setVisibility(View.GONE);
+                            checkTestStatus();
+                        }
                     } else {
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    if (mDataTest.size() == 0) {
-                        tvNoHaveTest.setVisibility(View.VISIBLE);
-                    } else {
-                        tvNoHaveTest.setVisibility(View.GONE);
+                        setInvisibleLoading();
+                        if (mDataTest.size() == 0) {
+                            tvNoHaveTest.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNoHaveTest.setVisibility(View.GONE);
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
                 } else {
                     int statusCode = response.code();
@@ -273,6 +286,7 @@ public class TestActivity extends AppCompatActivity {
                         mDataTest.get(i).setTestStatus(arrTestStatus.get(i));
                         mAdapter.notifyDataSetChanged();
                     }
+                    setInvisibleLoading();
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -291,7 +305,7 @@ public class TestActivity extends AppCompatActivity {
             arrQuesID.add(name);
     }
 
-    @OnClick({R.id.ivBack, R.id.rbEasy, R.id.rbMedium, R.id.rbHard, R.id.rdg_level,R.id.ivAdd})
+    @OnClick({R.id.ivBack, R.id.rbEasy, R.id.rbMedium, R.id.rbHard, R.id.rdg_level, R.id.ivAdd})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivBack:
@@ -309,21 +323,47 @@ public class TestActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(ConstantKey.ACTION_NOTIFY_DATA)) {
-                        level = EditTestActivity.Level + "";
-                        if (level.equals("1")) {
-                            rbEasy.setChecked(true);
-                        } else if (level.equals("2")) {
-                            rbMedium.setChecked(true);
-                        } else if (level.equals("3")) {
-                            rbHard.setChecked(true);
-                        }else {
+
+                        if (level.equals(EditTestActivity.Level + "")) {
+                            mDataTest.clear();
+                            setVisibleLoading();
+                            loadTest(level);
+                        } else {
+                            level = EditTestActivity.Level + "";
+                            switch (level) {
+                                case "1":
+                                    mDataTest.clear();
+                                    rbEasy.setChecked(true);
+                                    break;
+                                case "2":
+                                    mDataTest.clear();
+                                    rbMedium.setChecked(true);
+                                    break;
+                                case "3":
+                                    mDataTest.clear();
+                                    rbHard.setChecked(true);
+                                    break;
+                            }
+                        }
+                        if (level.equals(AddTestActivity.Level + "")) {
+                            mDataTest.clear();
+                            setVisibleLoading();
+                            loadTest(level);
+                        } else {
                             level = AddTestActivity.Level + "";
-                            if (level.equals("1")) {
-                                rbEasy.setChecked(true);
-                            } else if (level.equals("2")) {
-                                rbMedium.setChecked(true);
-                            } else if (level.equals("3")) {
-                                rbHard.setChecked(true);
+                            switch (level) {
+                                case "1":
+                                    mDataTest.clear();
+                                    rbEasy.setChecked(true);
+                                    break;
+                                case "2":
+                                    mDataTest.clear();
+                                    rbMedium.setChecked(true);
+                                    break;
+                                case "3":
+                                    mDataTest.clear();
+                                    rbHard.setChecked(true);
+                                    break;
                             }
                         }
                     }
@@ -335,5 +375,13 @@ public class TestActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setInvisibleLoading() {
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    public void setVisibleLoading() {
+        pbLoading.setVisibility(View.VISIBLE);
     }
 }

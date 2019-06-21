@@ -56,7 +56,9 @@ public class ChooseQuestionActivity extends AppCompatActivity {
     QuestionAdapter mAdapter;
     ArrayList<Question> mDataQuestion, mDataAllQuestion;
     SOService mService;
-    boolean checkAll,checkSelected;
+    boolean checkAll, checkSelected;
+    @BindView(R.id.tvNumberQuestion)
+    TextView tvNumberQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +91,20 @@ public class ChooseQuestionActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 checkAll = isChecked;
-                if(checkAll || (checkAll && checkSelected)){
+                if (checkAll || (checkAll && checkSelected)) {
                     checkAll(checkAll);
-                }else if((!checkAll && checkSelected)){
+                    tvNumberQuestion.setText(String.format(getString(R.string.question_number),mDataAllQuestion.size()));
+                } else if ((!checkAll && checkSelected)) {
                     getListSelected(checkSelected);
-                }else if((checkAll && !checkSelected)){
+                    tvNumberQuestion.setText(String.format(getString(R.string.question_number),mDataQuestion.size()));
+                } else if ((checkAll && !checkSelected)) {
                     checkAll(checkAll);
-                }else if(!checkAll && !checkSelected){
+                    tvNumberQuestion.setText(String.format(getString(R.string.question_number),mDataQuestion.size()));
+                } else if (!checkAll && !checkSelected) {
                     mDataAllQuestion.clear();
                     loadQuestion();
+                    tvNumberQuestion.setText(String.format(getString(R.string.question_number),mDataQuestion.size()));
                 }
-
             }
         });
 
@@ -107,15 +112,23 @@ public class ChooseQuestionActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 checkSelected = isChecked;
-                if(checkAll || (checkAll && checkSelected)){
+                if (checkAll || (checkAll && checkSelected)) {
                     checkAll(checkAll);
-                }else if((!checkAll && checkSelected)){
+                } else if ((!checkAll && checkSelected)) {
                     getListSelected(checkSelected);
-                }else if((checkAll && !checkSelected)){
+                } else if ((checkAll && !checkSelected)) {
                     checkAll(checkAll);
-                } else if(!checkAll && !checkSelected){
+                } else if (!checkAll && !checkSelected) {
                     getListSelected(checkSelected);
                 }
+            }
+        });
+
+        tvNumberQuestion.setText(String.format(getString(R.string.question_number),mDataQuestion.size()));
+        mAdapter.setmOnClick(new QuestionAdapter.OnClick() {
+            @Override
+            public void onItemClick(int numberQuestion) {
+                tvNumberQuestion.setText(String.format(getString(R.string.question_number),numberQuestion));
             }
         });
     }
@@ -152,7 +165,6 @@ public class ChooseQuestionActivity extends AppCompatActivity {
                         questionModel.setAnsC(item.getAnsC());
                         questionModel.setAnsD(item.getAnsD());
                         questionModel.setAnsCorrect(item.getAnsCorrect());
-//                        questionModel.setChoose(false);
                         mDataAllQuestion.add(questionModel);
                         if (mDataAllQuestion.size() == response.body().size()) {
                             checkChoose();

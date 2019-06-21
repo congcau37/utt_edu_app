@@ -22,14 +22,15 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import congdev37.edu.uttedudemo.admin.fragment.ExerciseManagerFragment;
+import congdev37.edu.uttedudemo.admin.fragment.AccountManagerFragment;
+import congdev37.edu.uttedudemo.admin.fragment.StatisticalManagerFragment;
 import congdev37.edu.uttedudemo.admin.fragment.SubjectManagerFragment;
 import congdev37.edu.uttedudemo.model.Student;
 import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
 import congdev37.edu.uttedudemo.student.fragment.ChangePasswordFragment;
 import congdev37.edu.uttedudemo.student.fragment.ExerciseFragment;
-import congdev37.edu.uttedudemo.student.fragment.ProfileStudentFragment;
+import congdev37.edu.uttedudemo.student.fragment.ProfileFragment;
 import congdev37.edu.uttedudemo.student.fragment.SubjectFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity
             hideFunctionNotAdmin();
             initFragment(new SubjectFragment());
         } else {
-            titleToolbar.setText("Ôn luyện");
+            titleToolbar.setText("Làm bài test");
             hideFunctionNotStudent();
             initFragment(new SubjectFragment());
         }
@@ -130,7 +131,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-//        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_layout);
         if (id == R.id.action_Logout) {
             finish();
         }
@@ -155,27 +155,29 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.navManagerSub) {
             titleToolbar.setText("Quản lý môn học");
+            initFragment(new SubjectManagerFragment());
             showItemAdd();
             initFragment(new SubjectManagerFragment());
         } else if (id == R.id.navManagerTest) {
             titleToolbar.setText("Quản lý bài test");
             hideItemAdd();
             initFragment(new SubjectFragment());
+        } else if (id == R.id.navManagerAccount) {
+            titleToolbar.setText("Quản lý tài khoản");
+            hideItemAdd();
+            initFragment(new AccountManagerFragment());
         } else if (id == R.id.navStatistical) {
             titleToolbar.setText("Thống kê");
             hideItemAdd();
-            initFragment(new ExerciseManagerFragment());
+            initFragment(new StatisticalManagerFragment());
         } else if (id == R.id.navTest) {
-            titleToolbar.setText("Ôn luyện");
+            titleToolbar.setText("Làm bài Test");
             hideItemAdd();
             initFragment(new SubjectFragment());
         } else if (id == R.id.navProfile) {
             titleToolbar.setText("Thông tin cá nhân");
             hideItemAdd();
-            if (permission.equals("admin")) {
-            } else {
-                initFragment(new ProfileStudentFragment());
-            }
+            initFragment(new ProfileFragment());
         } else if (id == R.id.navExercise) {
             titleToolbar.setText("Bài làm");
             hideItemAdd();
@@ -203,6 +205,7 @@ public class MainActivity extends AppCompatActivity
         nav_Menu.findItem(R.id.navManagerSub).setVisible(false);
         nav_Menu.findItem(R.id.navManagerTest).setVisible(false);
         nav_Menu.findItem(R.id.navStatistical).setVisible(false);
+        nav_Menu.findItem(R.id.navManagerAccount).setVisible(false);
     }
 
     // ẩn các chức năng không phải của admin

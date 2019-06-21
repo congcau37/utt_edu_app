@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +71,10 @@ public class TestActivity extends AppCompatActivity {
     ImageView ivAdd;
     @BindView(R.id.pbLoading)
     FrameLayout pbLoading;
+    @BindView(R.id.view)
+    View view;
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout swiperefresh;
 
     public static String subCode;
     SOService mService;
@@ -75,23 +82,21 @@ public class TestActivity extends AppCompatActivity {
     ArrayList<Question> mDataQuestion;
     ArrayList<Question> lisQuestion;
     ArrayList<String> arrQuesID;
-    ArrayList<Boolean> arrTestStatus;
+    ArrayList<Test> arrTestStatus;
     public static String level = "1";
-    public static String testID = "";
     public static String testName = "";
     boolean check;
     TestAdapter mAdapter;
     BroadcastReceiver myBroadCast;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         ButterKnife.bind(this);
-        initBroadCast();
         initData();
         initView();
+        initBroadCast();
     }
 
     @Override
@@ -124,12 +129,12 @@ public class TestActivity extends AppCompatActivity {
         mAdapter = new TestAdapter(mDataTest);
         mAdapter.setOnClick(new TestAdapter.OnClick() {
             @Override
-            public void onItemClick(String testID, String questionID, String Name, int position) {
+            public void onItemClick(String test_ID, String questionID, String Name, int position) {
                 mDataQuestion.clear();
                 testName = Name;
                 splitQuestionID(questionID);
                 for (int i = 0; i < arrQuesID.size(); i++) {
-                    loadQuestion(arrQuesID.get(i), testID, position);
+                    loadQuestion(arrQuesID.get(i), test_ID, position);
                 }
             }
         });
@@ -154,6 +159,20 @@ public class TestActivity extends AppCompatActivity {
                 loadTest(level);
             }
         });
+
+        //
+        swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadTest(level);
+                        swiperefresh.setRefreshing(false);
+                    }
+                }, 1500);
+            }
+        });
     }
 
     private void loadTest(String Level) {
@@ -169,8 +188,7 @@ public class TestActivity extends AppCompatActivity {
                     for (int i = 0; i < response.body().size(); i++) {
                         Test item = response.body().get(i);
                         Test test = new Test();
-                        testID = item.getTestID();
-                        test.setTestID(testID);
+                        test.setTestID(item.getTestID());
                         test.setTestName(item.getTestName());
                         test.setLevel(item.getLevel());
                         test.setQuestionID(item.getQuestionID());
@@ -183,9 +201,12 @@ public class TestActivity extends AppCompatActivity {
                         if (mDataTest.size() == 0) {
                             setInvisibleLoading();
                             tvNoHaveTest.setVisibility(View.VISIBLE);
+                            mAdapter.notifyDataSetChanged();
                         } else {
-                            tvNoHaveTest.setVisibility(View.GONE);
+                            arrTestStatus.clear();
+                            arrTestStatus.addAll(mDataTest);
                             checkTestStatus();
+                            tvNoHaveTest.setVisibility(View.GONE);
                         }
                     } else {
                         setInvisibleLoading();
@@ -193,8 +214,8 @@ public class TestActivity extends AppCompatActivity {
                             tvNoHaveTest.setVisibility(View.VISIBLE);
                         } else {
                             tvNoHaveTest.setVisibility(View.GONE);
-                            mAdapter.notifyDataSetChanged();
                         }
+                        mAdapter.notifyDataSetChanged();
                     }
                 } else {
                     int statusCode = response.code();
@@ -208,7 +229,7 @@ public class TestActivity extends AppCompatActivity {
         });
     }
 
-    private void loadQuestion(String questionID, final String testID, final int position) {
+    private void loadQuestion(String questionID, final String test_ID, final int position) {
         mService = ApiUtils.getSOService();
         Map<String, Object> params = new HashMap<>();
         params.put("questionID", questionID);
@@ -235,6 +256,7 @@ public class TestActivity extends AppCompatActivity {
                         Bundle bundle = new Bundle();
                         bundle.putParcelableArrayList("question", mDataQuestion);
                         bundle.putString("timer", mDataTest.get(position).getTime());
+                        bundle.putString("test_id", test_ID);
                         bundle.putInt("num_page", mDataQuestion.size());
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -244,7 +266,7 @@ public class TestActivity extends AppCompatActivity {
                         bundle.putParcelableArrayList("question", mDataQuestion);
                         bundle.putParcelableArrayList("test", (ArrayList<? extends Parcelable>) mDataTest);
                         bundle.putString("test_name", testName);
-                        bundle.putString("test_id", testID);
+                        bundle.putString("test_id", test_ID);
                         bundle.putInt("position", position);
                         bundle.putString("timer", mDataTest.get(position).getTime());
                         intent.putExtras(bundle);
@@ -264,38 +286,37 @@ public class TestActivity extends AppCompatActivity {
 
     public void checkTestStatus() {
         for (int i = 0; i < mDataTest.size(); i++) {
-            loadTestStatus(mDataTest.get(i).getTestID(), i);
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("studentCode", MainActivity.stdCode);
+            params.put("testID", mDataTest.get(i).getTestID());
+            final int finalI = i;
+            mService.getExercise(params).enqueue(new Callback<ResponseMessage>() {
+                @Override
+                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+                    if (response.isSuccessful()) {
+                        if (response.body().getSuccess() == 1) {
+                            arrTestStatus.get(finalI).setTestStatus(true);
+                        }
+                        if (finalI == mDataTest.size() - 1) {
+                            mDataTest.clear();
+                            mDataTest.addAll(arrTestStatus);
+                            setInvisibleLoading();
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseMessage> call, Throwable t) {
+
+                }
+            });
         }
     }
 
     private void loadTestStatus(String testID, final int i) {
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("studentCode", MainActivity.stdCode);
-        params.put("testID", testID);
-        mService.getExercise(params).enqueue(new Callback<ResponseMessage>() {
-            @Override
-            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess() == 1) {
-                        arrTestStatus.add(true);
-                    } else {
-                        arrTestStatus.add(false);
-                    }
-                    if (arrTestStatus.size() == mDataTest.size()) {
-                        mDataTest.get(i).setTestStatus(arrTestStatus.get(i));
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    setInvisibleLoading();
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseMessage> call, Throwable t) {
-
-            }
-        });
     }
 
     private void splitQuestionID(String question_ID) {
@@ -323,48 +344,28 @@ public class TestActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(ConstantKey.ACTION_NOTIFY_DATA)) {
-
-                        if (level.equals(EditTestActivity.Level + "")) {
-                            mDataTest.clear();
-                            setVisibleLoading();
-                            loadTest(level);
+                        int level_current = intent.getIntExtra("level", 0);
+                        String screen = intent.getStringExtra("screen");
+                        if (screen.equals("add_test")) {
+                            level_current = AddTestActivity.Level;
+                        } else if (screen.equals("edit_test")) {
+                            level_current = EditTestActivity.Level;
                         } else {
-                            level = EditTestActivity.Level + "";
-                            switch (level) {
-                                case "1":
-                                    mDataTest.clear();
-                                    rbEasy.setChecked(true);
-                                    break;
-                                case "2":
-                                    mDataTest.clear();
-                                    rbMedium.setChecked(true);
-                                    break;
-                                case "3":
-                                    mDataTest.clear();
-                                    rbHard.setChecked(true);
-                                    break;
-                            }
+                            level_current = Integer.parseInt(level);
                         }
-                        if (level.equals(AddTestActivity.Level + "")) {
-                            mDataTest.clear();
-                            setVisibleLoading();
-                            loadTest(level);
-                        } else {
-                            level = AddTestActivity.Level + "";
-                            switch (level) {
-                                case "1":
-                                    mDataTest.clear();
-                                    rbEasy.setChecked(true);
-                                    break;
-                                case "2":
-                                    mDataTest.clear();
-                                    rbMedium.setChecked(true);
-                                    break;
-                                case "3":
-                                    mDataTest.clear();
-                                    rbHard.setChecked(true);
-                                    break;
-                            }
+
+                        setVisibleLoading();
+                        loadTest(String.valueOf(level_current));
+                        switch (level_current + "") {
+                            case "1":
+                                rbEasy.setChecked(true);
+                                break;
+                            case "2":
+                                rbMedium.setChecked(true);
+                                break;
+                            case "3":
+                                rbHard.setChecked(true);
+                                break;
                         }
                     }
                 }

@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/edt_acc_password"
+                android:id="@+id/etOldpassword"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:paddingLeft="@dimen/app_margin_small"
@@ -58,6 +58,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/etOldPasswordReEnter"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:hint="Nhập lại mật khẩu cũ"

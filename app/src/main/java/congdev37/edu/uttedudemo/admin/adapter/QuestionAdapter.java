@@ -68,7 +68,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
         public void initView(final Question question, final int position) {
             tvQuestionName.setText(question.getQuesContent());
-
+//            mOnClick.onItemClick(getNumberQuestion());
             cbQuestion.setOnCheckedChangeListener(
                     new CompoundButton.OnCheckedChangeListener() {
                         @Override
@@ -82,21 +82,32 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 public void onClick(View view) {
                     boolean newState = mDatasets.get(position).isChoose();
                     mDatasets.get(position).setChoose(newState);
-
+                    mOnClick.onItemClick(getNumberQuestion());
                 }
             });
 
             cbQuestion.setChecked(isChecked(position));
-
-
         }
     }
 
     public interface OnClick {
-        void onItemClick(String questionID);
+        void onItemClick(int numberQuestion);
+
+    }
+
+    public int getNumberQuestion() {
+        int number = 0;
+        for (int i = 0; i < mDatasets.size(); i++) {
+            if (mDatasets.get(i).isChoose()) {
+                number += 1;
+            }
+        }
+        return number;
     }
 
     public ArrayList<Question> getmDatasets() {
         return mDatasets;
     }
+
+
 }

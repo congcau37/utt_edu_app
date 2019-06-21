@@ -12,16 +12,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,8 +64,8 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     TextView tvSubject;
     @BindView(R.id.spnLevel)
     Spinner spnLevel;
-    @BindView(R.id.tvQuestionNumber)
-    TextView tvQuestionNumber;
+    @BindView(R.id.etQuestionNumber)
+    EditText etQuestionNumber;
     @BindView(R.id.etTime)
     EditText etTime;
     @BindView(R.id.ivSub)
@@ -75,10 +79,10 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     ArrayList<String> arrLevel;
     ArrayList<String> arrSubject;
     ArrayList<Subject> mListSubject;
-    ArrayList<Question> mDataQuestion;
+    ArrayList<Question> mDataQuestion, listAllQuestion, mListAllQuestion, listQuestionRandom, listQuestionSelect;
     SOService mService;
     public static int Level;
-    int time = 0;
+    int time = 0, questionNumber = 0;
     String subjectCode;
     String questionID;
     @BindView(R.id.btnExit)
@@ -88,6 +92,14 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
     String testName;
     String Error = "";
+    @BindView(R.id.ivSubQues)
+    ImageView ivSubQues;
+    @BindView(R.id.ivPlusQues)
+    ImageView ivPlusQues;
+    @BindView(R.id.swAutoChoose)
+    Switch swAutoChoose;
+    @BindView(R.id.btnDelete)
+    Button btnDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,37 +111,33 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private void initData() {
+        listAllQuestion = new ArrayList<>();
+        mListAllQuestion = new ArrayList<>();
         arrLevel = new ArrayList<>();
         arrSubject = new ArrayList<>();
         mListSubject = new ArrayList<>();
         mDataQuestion = new ArrayList<>();
+        listQuestionSelect = new ArrayList<>();
+        listQuestionRandom = new ArrayList<>();
         arrLevel.add("Dễ");
         arrLevel.add("Trung bình");
         arrLevel.add("Khó");
         //
         mListSubject = SubjectFragment.mDataSubject;
+        loadQuestion();
     }
 
     private void initView() {
+        btnDelete.setVisibility(View.GONE);
+        btnExit.setVisibility(View.VISIBLE);
         tvTitleToolbar.setText("Thêm bài test");
         spnLevel.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
         ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrLevel);
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnLevel.setAdapter(levelAdapter);
-        //adapter spiner môn học
-//        CustomAdapter subjectAdapter = new CustomAdapter(this, R.layout.customspinneritem, mListSubject);
-//        subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spnSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                subjectCode = mListSubject.get(pos).getSubjectCode();
-//
-//            }
-//
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
-//        spnSubject.setAdapter(subjectAdapter);
         tvSubject.setText(SubjectFragment.subName);
+        etQuestionNumber.setHint("0");
+        etTime.setHint("0");
         //
         etTime.addTextChangedListener(new TextWatcher() {
             @Override
@@ -139,12 +147,10 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (time < 0 || s.toString().equals("")) {
+
+                if (s.length() < 0 || s.toString().equals("")) {
                     time = 0;
-                    etTime.setText("0");
-                } else if (time >= 120) {
-                    time = 120;
-                    etTime.setText("120");
+                    etTime.setHint("0");
                 } else {
                     time = Integer.parseInt(s.toString());
                 }
@@ -152,7 +158,65 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (time < 0) {
+                    time = 0;
+                    etTime.setHint("0");
+                }
+                if (time > 120) {
+                    time = 120;
+                    etTime.setText("120");
+                }
 
+            }
+        });
+
+        etQuestionNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length() < 0 || s.toString().equals("")) {
+                    questionNumber = 0;
+                    etQuestionNumber.setHint("0");
+                } else {
+                    questionNumber = Integer.parseInt(String.valueOf(s));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (questionNumber < 0) {
+                    questionNumber = 0;
+                    etQuestionNumber.setHint("0");
+                }
+                if (questionNumber > mListAllQuestion.size()) {
+                    questionNumber = mListAllQuestion.size();
+                    etQuestionNumber.setText(mListAllQuestion.size() + "");
+                }
+                if (questionNumber != 0 || questionNumber != mListAllQuestion.size()) {
+                    if (swAutoChoose.isChecked()) {
+                        setRandomQuestion(questionNumber);
+                    }
+                }
+            }
+        });
+
+        //
+        swAutoChoose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    setRandomQuestion(questionNumber);
+                } else {
+                    mDataQuestion.clear();
+                    mDataQuestion.addAll(listQuestionSelect);
+                    setTextQuestion(mDataQuestion);
+                    etQuestionNumber.setText(mDataQuestion.size() + "");
+                }
             }
         });
     }
@@ -166,7 +230,7 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
-    @OnClick({R.id.ivBack, R.id.tvSave, R.id.ivSub, R.id.ivPlus, R.id.tvQuestion, R.id.btnExit, R.id.btnSave})
+    @OnClick({R.id.ivBack, R.id.tvSave, R.id.ivSub, R.id.ivPlus, R.id.tvQuestion, R.id.btnExit, R.id.btnSave, R.id.ivPlusQues, R.id.ivSubQues})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnExit:
@@ -184,6 +248,18 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
                 break;
             case R.id.ivPlus:
                 etTime.setText(plusTime() + "");
+                break;
+            case R.id.ivPlusQues:
+                etQuestionNumber.setText(plusQuestion() + "");
+                if (swAutoChoose.isChecked()) {
+                    setRandomQuestion(questionNumber);
+                }
+                break;
+            case R.id.ivSubQues:
+                etQuestionNumber.setText(subQuestion() + "");
+                if (swAutoChoose.isChecked()) {
+                    setRandomQuestion(questionNumber);
+                }
                 break;
             case R.id.tvQuestion:
                 Intent intent = new Intent(this, ChooseQuestionActivity.class);
@@ -212,10 +288,46 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
         builderConfirm.show();
     }
 
+    private void loadQuestion() {
+        listAllQuestion.clear();
+        mListAllQuestion.clear();
+        mService = ApiUtils.getSOService();
+        Map<String, Object> params = new HashMap<>();
+        params.put("subCode", TestActivity.subCode);
+        mService.getAllQuestion(params).enqueue(new Callback<List<Question>>() {
+            @Override
+            public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
+                if (response.isSuccessful()) {
+                    for (int i = 0; i < response.body().size(); i++) {
+                        Question item = response.body().get(i);
+                        Question questionModel = new Question();
+                        questionModel.setQuestionID(item.getQuestionID());
+                        questionModel.setQuesContent(item.getQuesContent());
+                        questionModel.setSubCode(item.getSubCode());
+                        questionModel.setAnsA(item.getAnsA());
+                        questionModel.setAnsB(item.getAnsB());
+                        questionModel.setAnsC(item.getAnsC());
+                        questionModel.setAnsD(item.getAnsD());
+                        questionModel.setAnsCorrect(item.getAnsCorrect());
+                        mListAllQuestion.add(questionModel);
+                        listAllQuestion.add(questionModel);
+                    }
+                } else {
+                    int statusCode = response.code();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Question>> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void saveNewTest() {
         mService = ApiUtils.getSOService();
         Map<String, Object> params = new HashMap<>();
-        params.put("questionID", questionID);
+        params.put("questionID", getQuestionID());
         params.put("subjectCode", subjectCode);
         params.put("testName", testName);
         params.put("Level", Level);
@@ -228,6 +340,8 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess() == 1) {
                         Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
+                        intentBroadCast.putExtra("screen", "add_test");
+                        intentBroadCast.putExtra("level", Level);
                         sendBroadcast(intentBroadCast);
                         finish();
                     } else {
@@ -253,16 +367,21 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     private boolean validateForm() {
         subjectCode = TestActivity.subCode;
         testName = etTestName.getText().toString().trim();
+        if (testName.equals("")) {
+            Toast.makeText(this, "Tên đề thi không được để trống", Toast.LENGTH_SHORT).show();
+            etTestName.setError("Không được để trống");
+            return false;
+        }
         if (time == 0) {
             Toast.makeText(this, "Bạn chưa thiết lập thời gian", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (testName.equals("")) {
-            Toast.makeText(this, "Tên đề thi không được để trống", Toast.LENGTH_SHORT).show();
+        if (tvQuestion.getText().toString().equals("")) {
+            Toast.makeText(this, "Bạn chưa chọn câu hỏi", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (tvQuestion.getText().toString().equals("...")) {
-            Toast.makeText(this, "Bạn chưa chọn câu hỏi", Toast.LENGTH_SHORT).show();
+        if (Integer.parseInt(etQuestionNumber.getText().toString()) < mDataQuestion.size() || Integer.parseInt(etQuestionNumber.getText().toString()) > mDataQuestion.size()) {
+            Toast.makeText(this, "Tổng số câu phải bằng số câu đã chọn", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -277,26 +396,29 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
                 mDataQuestion.clear();
                 mDataQuestion = bd.getParcelableArrayList("question");
                 getQuestionID();
-                setTextQuestion();
-                tvQuestionNumber.setText(mDataQuestion.size() + "");
+                setTextQuestion(mDataQuestion);
+                etQuestionNumber.setText(mDataQuestion.size() + "");
             }
 
         }
     }
 
-    private void getQuestionID() {
+    //conver mảng question sang chuỗi
+    private String getQuestionID() {
         questionID = "";
         for (int i = 0; i < mDataQuestion.size(); i++) {
             questionID += mDataQuestion.get(i).getQuestionID() + ",";
         }
+        return questionID;
     }
 
-    private void setTextQuestion() {
-        String question = "Câu 1 : ";
-        for (int i = 0; i < mDataQuestion.size(); i++) {
-            question += mDataQuestion.get(i).getQuesContent();
+    private void setTextQuestion(ArrayList<Question> lisQues) {
+        StringBuilder question = new StringBuilder("");
+        for (int i = 0; i < lisQues.size(); i++) {
+            question.append("Câu " + (i + 1) + ": ");
+            question.append(lisQues.get(i).getQuesContent());
         }
-        tvQuestion.setText(question);
+        tvQuestion.setText(question.toString());
     }
 
     private int plusTime() {
@@ -308,11 +430,50 @@ public class AddTestActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private int subTime() {
-        if (time < 0) {
+        if (time <= 0) {
             return 0;
         }
         time -= 5;
         return time;
+    }
+
+    private int plusQuestion() {
+        if (questionNumber >= mListAllQuestion.size()) {
+            return mListAllQuestion.size();
+        } else {
+            questionNumber += 1;
+        }
+        return questionNumber;
+    }
+
+    private int subQuestion() {
+        if (questionNumber <= 0) {
+            return 0;
+        } else {
+            questionNumber -= 1;
+        }
+        return questionNumber;
+    }
+
+    private void setRandomQuestion(int numberQuestion) {
+        mDataQuestion.clear();
+        listQuestionRandom.clear();
+        Random rand = new Random();
+        for (int i = 0; i < numberQuestion; i++) {
+            Question question = new Question();
+            try {
+                int randomIndex = rand.nextInt(listAllQuestion.size());
+                question = listAllQuestion.get(randomIndex);
+                listAllQuestion.remove(randomIndex);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            listQuestionRandom.add(question);
+        }
+        listAllQuestion.clear();
+        mDataQuestion.addAll(listQuestionRandom);
+        listAllQuestion.addAll(mListAllQuestion);
+        setTextQuestion(mDataQuestion);
     }
 
     @Override

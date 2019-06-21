@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navTest"
             android:icon="@drawable/ic_test"
-            android:title="Ôn luyện" />
+            android:title="Làm bài Test" />
         <item
             android:id="@+id/navExercise"
             android:icon="@drawable/history_ic"
-            android:title="Bài làm" />
+            android:title="Lịch sử làm bài" />
         <item
             android:id="@+id/navManagerSub"
             android:icon="@drawable/ic_subject"
@@ -19,26 +19,30 @@
             android:id="@+id/navManagerTest"
             android:icon="@drawable/ic_test"
             android:title="Quản lý bài test" />
-        <!--<item-->
-            <!--android:id="@+id/navManagerExercise"-->
-            <!--android:icon="@drawable/ic_test"-->
-            <!--android:title="Quản lý bài làm" />-->
+        <item
+            android:id="@+id/navManagerAccount"
+            android:icon="@drawable/ic_test"
+            android:title="Quản lý tài khoản" />
         <item
             android:id="@+id/navStatistical"
             android:icon="@drawable/ic_chart"
             android:title="Thống kê" />
-        <item
-            android:id="@+id/navProfile"
-            android:icon="@drawable/ic_person_outline_black_24dp"
-            android:title="Thông tin cá nhân" />
-        <item
-            android:id="@+id/navChangePass"
-            android:icon="@drawable/ic_vpn_key_black_24dp"
-            android:title="Đổi mật khẩu" />
-        <item
-            android:id="@+id/navLogout"
-            android:icon="@drawable/ic_logout"
-            android:title="Đăng xuất" />
 
+        <item android:title="Tài khoản">
+            <menu>
+                <item
+                    android:id="@+id/navProfile"
+                    android:icon="@drawable/ic_person"
+                    android:title="Thông tin cá nhân" />
+                <item
+                    android:id="@+id/navChangePass"
+                    android:icon="@drawable/ic_vpn_key_black_24dp"
+                    android:title="Đổi mật khẩu" />
+                <item
+                    android:id="@+id/navLogout"
+                    android:icon="@drawable/ic_logout"
+                    android:title="Đăng xuất" />
+            </menu>
+        </item>
     </group>
 </menu>

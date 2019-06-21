@@ -36,6 +36,7 @@ public class ScreenSlideActivity extends FragmentActivity {
     ImageView ivBack;
     @BindView(R.id.tvStatus)
     TextView tvStatus;
+    public static String testID = "";
 
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
@@ -69,12 +70,8 @@ public class ScreenSlideActivity extends FragmentActivity {
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-
-        final Intent intent = getIntent();
-        final Bundle bundle = intent.getExtras();
-        listQuestion = new ArrayList<Question>();
-        listQuestion = bundle.getParcelableArrayList("question");
-        totalTimemer = Integer.parseInt(bundle.getString("timer"));
+        //
+        getDataQuestion();
         tvKiemTra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,6 +96,15 @@ public class ScreenSlideActivity extends FragmentActivity {
             }
         });
         timer.start();
+    }
+
+    private void getDataQuestion() {
+        final Intent intent = getIntent();
+        final Bundle bundle = intent.getExtras();
+        listQuestion = new ArrayList<Question>();
+        listQuestion = bundle.getParcelableArrayList("question");
+        totalTimemer = Integer.parseInt(bundle.getString("timer"));
+        testID = bundle.getString("test_id");
     }
 
     private void initControls() {

@@ -36,7 +36,6 @@ import retrofit2.Response;
  */
 public class SubjectFragment extends Fragment {
     Unbinder unbinder;
-
     SOService mService;
     public static ArrayList<Subject> mDataSubject;
     SubjectAdapter mAdapter;

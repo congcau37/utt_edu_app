@@ -42,8 +42,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/color_white"
-                    android:textSize="@dimen/font_size_medium"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/font_size_medium" />
 
                 <TextView
                     android:id="@+id/tvSave"
@@ -174,17 +173,59 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/app_margin_small"
-                    android:text="Số câu"
+                    android:text="Tổng số câu"
                     android:textSize="@dimen/font_size_small" />
 
-                <TextView
-                    android:id="@+id/tvQuestionNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="0"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/font_size_small" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left">
+
+                    <EditText
+                        android:id="@+id/etQuestionNumber"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/app_margin_small"
+                        android:layout_marginRight="@dimen/app_margin_small"
+                        android:layout_toRightOf="@id/ivSubQues"
+                        android:background="@drawable/bg_et_input"
+                        android:gravity="center"
+                        android:hint="0"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/app_margin_small"
+                        android:paddingRight="@dimen/app_margin_small"
+                        tools:ignore="LabelFor" />
+
+                    <ImageView
+                        android:id="@+id/ivSubQues"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/selector_circle_color"
+                        android:src="@drawable/ic_circle_sub"
+                        android:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/ivPlusQues"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/etQuestionNumber"
+                        android:background="@drawable/selector_circle_color"
+                        android:src="@drawable/ic_circle_plus"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/app_margin_small"
+                        android:layout_toRightOf="@id/ivPlusQues"
+                        android:gravity="center"
+                        android:text="(Câu)" />
+                </RelativeLayout>
             </LinearLayout>
 
             <View
@@ -286,9 +327,17 @@
                     android:maxEms="15"
                     android:paddingLeft="@dimen/app_margin_small"
                     android:singleLine="true"
-                    android:text="..."
+                    android:hint="Nhấn để chọn câu hỏi..."
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/font_size_small" />
+
+                <Switch
+                    android:id="@+id/swAutoChoose"
+                    android:layout_marginLeft="@dimen/app_margin_small"
+                    android:text="Tự chọn"
+                    android:textSize="@dimen/font_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </LinearLayout>
@@ -301,6 +350,17 @@
             android:layout_margin="@dimen/app_margin_small">
 
             <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/app_margin_small"
+                android:layout_marginRight="@dimen/app_margin_small"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_cancel"
+                android:text="Xóa"
+                android:textColor="@color/color_white" />
+
+            <Button
                 android:id="@+id/btnExit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -308,7 +368,8 @@
                 android:layout_marginRight="@dimen/app_margin_small"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_cancel"
-                android:text="Thoát"
+                android:text="Hủy"
+                android:visibility="gone"
                 android:textColor="@color/color_white" />
 
             <Button

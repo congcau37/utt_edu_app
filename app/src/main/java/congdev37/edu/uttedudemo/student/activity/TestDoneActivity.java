@@ -32,6 +32,7 @@ import congdev37.edu.uttedudemo.response.ResponseMessage;
 import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
 import congdev37.edu.uttedudemo.student.fragment.SubjectFragment;
+import congdev37.edu.uttedudemo.student.slide.ScreenSlideActivity;
 import congdev37.edu.uttedudemo.student.slide.ScreenSlidePageFragment;
 import congdev37.edu.uttedudemo.util.ConstantKey;
 import congdev37.edu.uttedudemo.util.Converter;
@@ -100,20 +101,20 @@ public class TestDoneActivity extends AppCompatActivity {
         btnSavePoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog builder = new Dialog(TestDoneActivity.this,R.style.Theme_Dialog);
+                final Dialog dialog = new Dialog(TestDoneActivity.this,R.style.Theme_Dialog);
                 getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                builder.setContentView(R.layout.alert_dialog_saver_point);
-                builder.setCancelable(true);
-                builder.setCanceledOnTouchOutside(true);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.alert_dialog_saver_point);
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
 
-                txtname =  builder.findViewById(R.id.txt_name);
-                txtLevel =  builder.findViewById(R.id.txt_level);
-                txtstdCode =  builder.findViewById(R.id.txt_student_code);
-                txtSubject =  builder.findViewById(R.id.txt_subject);
-                TextView txtPoint =  builder.findViewById(R.id.txt_point);
-                Button btClose =  builder.findViewById(R.id.btClose);
-                Button btSave =  builder.findViewById(R.id.btSave);
+                txtname =  dialog.findViewById(R.id.txt_name);
+                txtLevel =  dialog.findViewById(R.id.txt_level);
+                txtstdCode =  dialog.findViewById(R.id.txt_student_code);
+                txtSubject =  dialog.findViewById(R.id.txt_subject);
+                TextView txtPoint =  dialog.findViewById(R.id.txt_point);
+                Button btClose =  dialog.findViewById(R.id.btClose);
+                Button btSave =  dialog.findViewById(R.id.btSave);
 
                 final int numTotal = numTrue;
                 txtPoint.setText(numTotal + "/" + listQuestion.size());
@@ -125,7 +126,7 @@ public class TestDoneActivity extends AppCompatActivity {
                 btClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        builder.dismiss();
+                        dialog.dismiss();
                     }
                 });
                 btSave.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +135,7 @@ public class TestDoneActivity extends AppCompatActivity {
                         saveTest();
                     }
                 });
-                builder.show();
+                dialog.show();
             }
 
         });
@@ -170,7 +171,7 @@ public class TestDoneActivity extends AppCompatActivity {
     private void saveTest() {
         mService = ApiUtils.getSOService();
         Map<String, Object> params = new HashMap<>();
-        params.put("testID", TestActivity.testID);
+        params.put("testID", ScreenSlideActivity.testID);
         params.put("studentCode", MainActivity.stdCode);
         params.put("Answer", Converter.convertAnswer(getAnswer()));
         params.put("exDay", Converter.setDate());
@@ -183,8 +184,9 @@ public class TestDoneActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess() == 1) {
                         Toast.makeText(TestDoneActivity.this, "Lưu thành công!", Toast.LENGTH_SHORT).show();
-//                        Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
-//                        sendBroadcast(intentBroadCast);
+                        Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
+                        intentBroadCast.putExtra("screen", "test_completed");
+                        sendBroadcast(intentBroadCast);
                         finish();
                     } else {
                         Toast.makeText(TestDoneActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();

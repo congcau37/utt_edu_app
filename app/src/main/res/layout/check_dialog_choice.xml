@@ -2,13 +2,16 @@
 <FrameLayout
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="@color/colorGrayLight"
     android:layout_height="520dp">
 
     <ImageView
         android:src="@drawable/q_a"
         android:scaleType="centerInside"
         android:layout_width="wrap_content"
+        android:background="@color/colorGrayLight"
         android:layout_height="wrap_content" />
+
     <GridView
         android:numColumns="3"
         android:id="@+id/grv_choice"

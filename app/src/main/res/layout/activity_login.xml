@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/textInputEditTextEmail"
+                android:id="@+id/etAccName"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -58,7 +58,7 @@
                 android:maxLines="1"
                 android:layout_marginRight="@dimen/app_margin_small"
                 android:paddingLeft="@dimen/app_margin_small"
-                android:text="66dcht22447"
+                android:text=""
                 android:textColor="@android:color/black" />
 
             <ImageView
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/textInputEditTextPassword"
+                android:id="@+id/etAccPassword"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginRight="46dp"
@@ -93,9 +93,19 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/app_margin_small"
-                android:text="12345678"
+                android:text=""
                 android:textColor="@android:color/black" />
         </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cbSaveLogin"
+            android:text="Lưu tài khoản"
+            android:layout_gravity="left"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="@dimen/app_margin_large"
+            android:layout_marginLeft="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/appCompatButtonLogin"

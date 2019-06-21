@@ -1,16 +1,29 @@
 package congdev37.edu.uttedudemo.model;
 
-public class User {
-    String id;
-    String name;
-    String password;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    public User(String name, String password) {
-        this.name = name;
-        this.password = password;
+public class User {
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("password")
+    @Expose
+    private String password;
+    @SerializedName("type")
+    @Expose
+    private String type;
+
+    public String getId() {
+        return id;
     }
 
-    public User() {
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -29,11 +42,12 @@ public class User {
         this.password = password;
     }
 
-    public String getId() {
-        return id;
+    public String getType() {
+        return type;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setType(String type) {
+        this.type = type;
     }
+
 }

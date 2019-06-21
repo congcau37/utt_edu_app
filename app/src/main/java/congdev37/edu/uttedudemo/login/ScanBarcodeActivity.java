@@ -44,7 +44,7 @@ public class ScanBarcodeActivity extends AppCompatActivity implements ZXingScann
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == ConstantKey.REQUEST_PERMISSION_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Bạn được phép mở CAMERA", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "CAMERA đã sẵn sàng", Toast.LENGTH_SHORT).show();
             mScannerView.setResultHandler(this);
             mScannerView.startCamera();
         } else {

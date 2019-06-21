@@ -30,7 +30,7 @@
                 android:layout_marginLeft="@dimen/font_size_medium"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/font_size_medium"
-                android:textStyle="bold" />
+                 />
 
             <!--<ImageButton-->
                 <!--android:id="@+id/btnTitleClose"-->
@@ -210,6 +210,6 @@
             android:layout_marginLeft="@dimen/app_margin_small"
             android:textColor="@color/color_white"
             android:background="@drawable/selector_button_login"
-            android:text="Nộp bài" />
+            android:text="Xong" />
     </LinearLayout>
 </TableLayout>

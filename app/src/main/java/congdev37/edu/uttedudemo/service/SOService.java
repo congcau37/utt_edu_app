@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import congdev37.edu.uttedudemo.model.Exercise;
+import congdev37.edu.uttedudemo.model.Admin;
 import congdev37.edu.uttedudemo.model.Question;
 import congdev37.edu.uttedudemo.model.ResponseHistory;
 import congdev37.edu.uttedudemo.model.Student;
@@ -30,6 +30,12 @@ public interface SOService {
 
         @GET("getStudent.php?getStudent&format=json")
         Call<List<Student>> getStudent(@QueryMap Map<String, Object> option);
+
+        @GET("getAllAccount.php?getAllAccount&format=json")
+        Call<List<User>> getAllAccount(@QueryMap Map<String, Object> option);
+
+        @GET("getAdmin.php?getAdmin&format=json")
+        Call<List<Admin>> getAdmin(@QueryMap Map<String, Object> option);
 //
         @GET("getAllSubject.php?getAllSubject&format=json")
         Call<List<Subject>> getAllSubject(@QueryMap Map<String, Object> option);
@@ -61,6 +67,10 @@ public interface SOService {
         @FormUrlEncoded
         @POST("updateTest.php")
         Call<ResponseMessage> updateTest(@FieldMap Map<String, Object> params);
+
+        @FormUrlEncoded
+        @POST("deleteTest.php")
+        Call<ResponseMessage> deleteTest(@FieldMap Map<String, Object> params);
 
         @FormUrlEncoded
         @POST("saveNewTest.php")

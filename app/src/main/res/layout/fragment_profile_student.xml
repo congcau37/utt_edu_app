@@ -47,6 +47,7 @@
             android:weightSum="3">
 
             <TextView
+                android:id="@+id/tvstudentCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -55,7 +56,16 @@
                 android:textSize="@dimen/font_size_small" />
 
             <TextView
-                android:id="@+id/txt_std_code"
+                android:id="@+id/tvTecherCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text="Mã giảng viên"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:id="@+id/tvCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -161,6 +171,7 @@
             android:background="@color/colorGray" />
 
         <LinearLayout
+            android:id="@+id/lnClass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

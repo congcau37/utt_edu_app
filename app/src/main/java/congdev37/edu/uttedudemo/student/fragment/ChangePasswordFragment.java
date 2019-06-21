@@ -2,20 +2,25 @@ package congdev37.edu.uttedudemo.student.fragment;
 
 
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import congdev37.edu.uttedudemo.MainActivity;
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.model.User;
@@ -33,10 +38,22 @@ public class ChangePasswordFragment extends Fragment {
 
     View view;
     String stdCode;
-    EditText edtAccOldPass, edtAccNewPass;
     Button btnSave;
     SOService mService;
     ArrayList<User> dataUser;
+    @BindView(R.id.etOldpassword)
+    TextInputEditText etOldpassword;
+    @BindView(R.id.textInputLayoutEmail)
+    LinearLayout textInputLayoutEmail;
+    @BindView(R.id.etOldPasswordReEnter)
+    TextInputEditText etOldPasswordReEnter;
+    @BindView(R.id.edt_acc_new_password)
+    TextInputEditText etNewPassword;
+    @BindView(R.id.lnLogin)
+    LinearLayoutCompat lnLogin;
+    @BindView(R.id.ibt_save)
+    AppCompatButton ibtSave;
+    Unbinder unbinder;
 
     public ChangePasswordFragment() {
         // Required empty public constructor
@@ -48,6 +65,7 @@ public class ChangePasswordFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_account, container, false);
+        unbinder = ButterKnife.bind(this, view);
         stdCode = MainActivity.stdCode;
         mService = ApiUtils.getSOService();
         initData();
@@ -61,9 +79,6 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void initView() {
-
-        edtAccOldPass = view.findViewById(R.id.edt_acc_password);
-        edtAccNewPass = view.findViewById(R.id.edt_acc_new_password);
         btnSave = view.findViewById(R.id.ibt_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,12 +116,18 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void saveChangeAccount() {
-        String oldPassword = edtAccOldPass.getText().toString();
-        String newPassword = edtAccNewPass.getText().toString();
+        String oldPassword = etOldpassword.getText().toString();
+        String newPassword = etNewPassword.getText().toString();
         if (oldPassword.equals("")) {
-            Toast.makeText(getActivity(), "Xin nhập mật khẩu cũ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Vui lòng nhập mật khẩu cũ", Toast.LENGTH_SHORT).show();
+            etOldpassword.setError("không được bỏ trống");
+            etOldPasswordReEnter.setError("không được bỏ trống");
 
-        } else if (oldPassword.equals(dataUser.get(0).getPassword())) {
+        }else if(etNewPassword.equals("")){
+            etNewPassword.setError("không được bỏ trống");
+        }
+
+        else if (oldPassword.equals(dataUser.get(0).getPassword())) {
             mService = ApiUtils.getSOService();
             Map<String, Object> params = new HashMap<>();
             params.put("updateUser", oldPassword);
@@ -119,7 +140,8 @@ public class ChangePasswordFragment extends Fragment {
 
                     if (response.isSuccessful()) {
                         if (response.body().getSuccess() == 1) {
-                            Toast.makeText(getActivity(), "Lưu thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
+                            initFragment(new SubjectFragment());
 
                         } else if (response.body().getSuccess() == 0) {
                             Toast.makeText(getActivity(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -153,5 +175,11 @@ public class ChangePasswordFragment extends Fragment {
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, fragment);
         ft.commit();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

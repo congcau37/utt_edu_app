@@ -173,9 +173,11 @@ public class TestDoneActivity extends AppCompatActivity {
         Map<String, Object> params = new HashMap<>();
         params.put("testID", ScreenSlideActivity.testID);
         params.put("studentCode", MainActivity.stdCode);
+        params.put("subjectCode", TestActivity.subCode);
         params.put("Answer", Converter.convertAnswer(getAnswer()));
         params.put("exDay", Converter.setDate());
         params.put("Score", "" + totalPoint + "/" + listQuestion.size());
+        params.put("status", 0);
 
         mService.saveTest(params).enqueue(new Callback<ResponseMessage>() {
             @Override

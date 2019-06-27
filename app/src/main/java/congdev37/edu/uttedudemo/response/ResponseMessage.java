@@ -10,9 +10,9 @@ public class ResponseMessage {
     @SerializedName("message")
     @Expose
     String message;
-    @SerializedName("type")
+    @SerializedName("permission")
     @Expose
-    String type;
+    String Permission;
 
     public ResponseMessage(int success, String message) {
         this.success = success;
@@ -38,11 +38,11 @@ public class ResponseMessage {
         this.message = message;
     }
 
-    public String getType() {
-        return type;
+    public String getPermission() {
+        return Permission;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPermission(String permission) {
+        this.Permission = permission;
     }
 }

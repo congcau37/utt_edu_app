@@ -65,12 +65,28 @@ public interface SOService {
         Call<ResponseMessage> saveTest(@FieldMap Map<String, Object> params);
 
         @FormUrlEncoded
+        @POST("createSubject.php")
+        Call<ResponseMessage> createSubject(@FieldMap Map<String, Object> params);
+
+        @FormUrlEncoded
+        @POST("updateSubject.php")
+        Call<ResponseMessage> updateSubject(@FieldMap Map<String, Object> params);
+
+        @FormUrlEncoded
+        @POST("deleteSubject.php")
+        Call<ResponseMessage> deleteSubject(@FieldMap Map<String, Object> params);
+
+        @FormUrlEncoded
         @POST("updateTest.php")
         Call<ResponseMessage> updateTest(@FieldMap Map<String, Object> params);
 
         @FormUrlEncoded
         @POST("deleteTest.php")
         Call<ResponseMessage> deleteTest(@FieldMap Map<String, Object> params);
+
+        @FormUrlEncoded
+        @POST("deleteUser.php")
+        Call<ResponseMessage> deleteUser(@FieldMap Map<String, Object> params);
 
         @FormUrlEncoded
         @POST("saveNewTest.php")

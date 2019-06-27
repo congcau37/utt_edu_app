@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
 import congdev37.edu.uttedudemo.student.adapter.ExerciseAdapter;
 import congdev37.edu.uttedudemo.util.TimeHelper;
+import congdev37.edu.uttedudemo.util.TimeInterval;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,12 +35,14 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ExerciseFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
     View view;
     ListView lvHistory;
     SOService mService;
     ExerciseAdapter adapter;
+    TimeHelper timeHelper;
+    TimeInterval timeInterval;
 
     ArrayList<ResponseHistory> mData;
     ArrayList<Subject> mSubject;
@@ -54,13 +58,10 @@ public class ExerciseFragment extends Fragment {
     @BindView(R.id.pbLoading)
     FrameLayout pbLoading;
     Unbinder unbinder;
-    TimeHelper timeHelper;
 
-
-    public ExerciseFragment() {
+    public HistoryFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,10 +88,14 @@ public class ExerciseFragment extends Fragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.rbToday) {
-                    TimeHelper.getInstance().getToday();
+                    timeInterval = TimeHelper.getInstance().getToday();
+                    Toast.makeText(getContext(), timeInterval.getStartTimeToServer()+"---"+timeInterval.getEndTimeToServer(), Toast.LENGTH_LONG).show();
                 } else if (checkedId == R.id.rbMonth) {
-                    TimeHelper.getInstance().getThisMonth();
+                    timeInterval = TimeHelper.getInstance().getThisMonth();
+                    Toast.makeText(getContext(), timeInterval.getStartTimeToServer()+"---"+timeInterval.getEndTimeToServer(), Toast.LENGTH_LONG).show();
                 } else {
+                    timeInterval = TimeHelper.getInstance().getAll();
+                    Toast.makeText(getContext(), timeInterval.getStartTimeToServer()+"---"+timeInterval.getStartTimeToServer(), Toast.LENGTH_LONG).show();
 
                 }
             }

@@ -14,9 +14,9 @@ public class User {
     @SerializedName("password")
     @Expose
     private String password;
-    @SerializedName("type")
+    @SerializedName("permission")
     @Expose
-    private String type;
+    private String Permission;
 
     public String getId() {
         return id;
@@ -42,12 +42,12 @@ public class User {
         this.password = password;
     }
 
-    public String getType() {
-        return type;
+    public String getPermission() {
+        return Permission;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPermission(String permission) {
+        this.Permission = permission;
     }
 
 }

@@ -1,18 +1,17 @@
-<!-- fragment_screen_slide_page.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blue_bg"
+    android:background="@color/color_bg_multiple_choice"
     android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:id="@+id/content"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -20,12 +19,14 @@
             android:paddingRight="10dp">
 
             <LinearLayout
+                android:id="@+id/lnTop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvNum"
+                    android:layout_marginTop="@dimen/app_margin_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -38,6 +39,7 @@
                     android:id="@+id/tvQuestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/app_margin_medium"
                     android:text="Câu hỏi thứ nhất "
                     android:textColor="#000000"
                     android:textSize="20sp"
@@ -54,8 +56,10 @@
                 android:visibility="visible" />
 
             <LinearLayout
+                android:layout_below="@id/lnTop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/app_margin_large"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -73,16 +77,16 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/app_margin_large"
                         android:text="B. "
                         android:textColor="#1502c7"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/app_margin_large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="C. "
@@ -91,7 +95,7 @@
                     android:textStyle="bold" />
 
                     <TextView
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="@dimen/app_margin_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="D. "
@@ -121,6 +125,7 @@
                         android:id="@+id/radB"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/app_margin_small"
                         android:checked="false"
                         android:text="Trả lời 2"
                         android:textColor="#1502c7"
@@ -131,6 +136,7 @@
                         android:id="@+id/radC"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/app_margin_small"
                         android:checked="false"
                         android:text="Trả lời 3"
                         android:textColor="#1502c7"
@@ -140,6 +146,7 @@
                         android:id="@+id/radD"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/app_margin_small"
                         android:checked="false"
                         android:text="Trả lời 4"
                         android:textColor="#1502c7"
@@ -147,6 +154,8 @@
                         android:textStyle="bold" />
                 </RadioGroup>
             </LinearLayout>
-        </LinearLayout>
+            
+        </RelativeLayout>
+
     </ScrollView>
 </LinearLayout>

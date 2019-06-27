@@ -3,7 +3,7 @@
     android:id="@+id/lnContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_white"
+    android:background="@drawable/selector_no_radius_white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -29,6 +29,7 @@
             android:layout_height="fill_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="@drawable/selector_item_edit"
             android:paddingLeft="@dimen/app_margin_medium"
             android:paddingRight="@dimen/app_margin_medium">
 

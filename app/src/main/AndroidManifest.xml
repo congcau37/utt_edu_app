@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".admin.activity.ChooseQuestionActivity"></activity>
+        <activity android:name=".admin.activity.StudentInformation"></activity>
+        <activity android:name=".admin.activity.ChooseQuestionActivity" />
         <activity android:name=".admin.activity.EditTestActivity" />
         <activity android:name=".admin.activity.AddTestActivity" />
         <activity android:name=".student.activity.TestActivity" />
@@ -33,9 +34,7 @@
         <activity
             android:name=".login.ScanBarcodeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".SplashActivity" >
-
-        </activity>
+        <activity android:name=".SplashActivity"></activity>
     </application>
 
 </manifest>

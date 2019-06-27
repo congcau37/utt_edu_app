@@ -20,10 +20,6 @@
             android:icon="@drawable/ic_test"
             android:title="Quản lý bài test" />
         <item
-            android:id="@+id/navManagerAccount"
-            android:icon="@drawable/ic_test"
-            android:title="Quản lý tài khoản" />
-        <item
             android:id="@+id/navStatistical"
             android:icon="@drawable/ic_chart"
             android:title="Thống kê" />
@@ -31,8 +27,12 @@
         <item android:title="Tài khoản">
             <menu>
                 <item
+                    android:id="@+id/navManagerAccount"
+                    android:icon="@drawable/ic_person_outline_black_24dp"
+                    android:title="Quản lý tài khoản" />
+                <item
                     android:id="@+id/navProfile"
-                    android:icon="@drawable/ic_person"
+                    android:icon="@drawable/ic_profiles"
                     android:title="Thông tin cá nhân" />
                 <item
                     android:id="@+id/navChangePass"

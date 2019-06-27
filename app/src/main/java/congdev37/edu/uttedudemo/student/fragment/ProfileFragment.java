@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_profile_student, container, false);
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, view);
         initView();
         return view;

@@ -12,4 +12,6 @@
     <color name="color_black_light">#524E4E</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_red">#FC2D20</color>
+    <color name="color_bg_multiple_choice">#E6E7DA</color>
+
 </resources>

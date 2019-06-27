@@ -189,11 +189,9 @@ public class ScreenSlideActivity extends FragmentActivity {
                 } else {
                     view.setTranslationX(-horzMargin + vertMargin / 2);
                 }
-
                 // Scale the page down (between MIN_SCALE and 1)
                 view.setScaleX(scaleFactor);
                 view.setScaleY(scaleFactor);
-
                 // Fade the page relative to its size.
                 view.setAlpha(MIN_ALPHA +
                         (scaleFactor - MIN_SCALE) /

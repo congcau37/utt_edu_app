@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_note_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="UTT EDU"
+            android:textSize="@dimen/font_size_medium"
+            android:textColor="@color/color_white"
+            android:gravity="center|left"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/app_margin_small"
+            android:layout_width="match_parent"
+            android:layout_height="60dp" />
+
+        <ImageButton
+            android:id="@+id/btnTitleClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_button_back"
+            android:paddingLeft="@dimen/app_margin_medium"
+            android:paddingTop="@dimen/app_margin_small"
+            android:paddingRight="@dimen/app_margin_small"
+            android:paddingBottom="@dimen/app_margin_small"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="100dp"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/app_margin_small"
+        android:paddingTop="@dimen/app_margin_medium"
+        android:paddingRight="@dimen/app_margin_small"
+        android:paddingBottom="@dimen/app_margin_medium">
+
+        <EditText
+            android:id="@+id/etSubjectName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập tên môn học"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingTop="@dimen/app_margin_medium"
+            android:paddingBottom="@dimen/app_margin_medium"
+            android:scrollHorizontally="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/font_size_medium">
+            <requestFocus />
+        </EditText>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_row_height"
+            android:background="@color/colorGray" />
+
+        <EditText
+            android:id="@+id/etSubjectCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập mã môn học"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingTop="@dimen/app_margin_medium"
+            android:paddingBottom="@dimen/app_margin_medium"
+            android:scrollHorizontally="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/font_size_medium">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:textColor="@color/color_white"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/selector_btn_cancel"
+            android:text="hủy"
+            android:textAllCaps="true"
+            />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/selector_button_login"
+            android:text="Lưu"
+            android:textAllCaps="true"
+            android:layout_margin="@dimen/app_margin_small"
+            android:textColor="@color/color_white" />
+    </LinearLayout>
+</LinearLayout>

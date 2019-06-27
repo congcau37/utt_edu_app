@@ -66,16 +66,30 @@ public class SubjectListAdapter extends RecyclerView.Adapter<SubjectListAdapter.
 
         public void initView(final Subject subject) {
             tvSubject.setText(subject.getSubjectName());
-            itemView.setOnClickListener(new View.OnClickListener() {
+            rlEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(mOnClick!=null){
+                        mOnClick.onItemClick(subject);
+                    }
+                }
+            });
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(mOnClick!=null){
+                        mOnClick.longclick(subject);
+                    }
+                    return false;
                 }
             });
         }
     }
 
     public interface OnClick {
-        void onItemClick();
+        void onItemClick(Subject subject);
+
+        void longclick(Subject subject);
     }
 }

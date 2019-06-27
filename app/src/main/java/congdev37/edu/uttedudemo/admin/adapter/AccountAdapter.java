@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.model.User;
@@ -17,11 +19,19 @@ public class AccountAdapter extends BaseAdapter {
     private Context context;
     private int layout;
     private ArrayList<User> mData;
+    ArrayList<User> list;
+    ItemClick mItemClick;
 
     public AccountAdapter(Context context, int layout, ArrayList<User> mData) {
+        list = new ArrayList<>();
         this.context = context;
         this.layout = layout;
         this.mData = mData;
+        list.addAll(mData);
+    }
+
+    public void setmItemClick(ItemClick mItemClick) {
+        this.mItemClick = mItemClick;
     }
 
     @Override
@@ -52,13 +62,14 @@ public class AccountAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        User user = mData.get(i);
+        final User user = mData.get(i);
         viewHolder.tvAccCode.setText(user.getName());
         viewHolder.imgDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mData.remove(i);
-                notifyDataSetChanged();
+                if (mItemClick!=null){
+                    mItemClick.onDeleteUser(user);
+                }
             }
         });
         return view;
@@ -67,5 +78,24 @@ public class AccountAdapter extends BaseAdapter {
     public class ViewHolder {
         TextView tvAccCode;
         ImageView imgEdit,imgDel;
+    }
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        mData.clear();
+        if (charText.length() == 0) {
+            mData.addAll(list);
+        } else {
+            for (User model : list) {
+                if (charText.length() != 0 && model.getName() != null && model.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mData.add(model);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public interface ItemClick{
+        void onDeleteUser(User user);
     }
 }

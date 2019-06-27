@@ -29,6 +29,11 @@ public class Subject {
     public Subject() {
     }
 
+    public Subject(String subjectCode, String subjectName) {
+        this.subjectCode = subjectCode;
+        this.subjectName = subjectName;
+    }
+
     public String getSubjectCode() {
         return subjectCode;
     }

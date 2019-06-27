@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.graphics.PorterDuff.Mode.ADD;
+
 public class Converter {
 
     public static String convertLevel(String num){

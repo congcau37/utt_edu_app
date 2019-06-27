@@ -478,6 +478,10 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
 
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess() == 1) {
+                        Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
+                        intentBroadCast.putExtra("screen", "edit_test");
+                        intentBroadCast.putExtra("level", Level);
+                        sendBroadcast(intentBroadCast);
                         finish();
                     } else {
                         Toast.makeText(EditTestActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();

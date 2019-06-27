@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
                     if (response.isSuccessful()) {
                         if (response.body().getSuccess() == 1) {
-                            if (Integer.parseInt(response.body().getType()) == 0) {
+                            if (Integer.parseInt(response.body().getPermission()) == 0) {
                                 permission = "admin";
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 Bundle bundle = new Bundle();
@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
                     if (response.isSuccessful()) {
                         if (response.body().getSuccess() == 1) {
-                            if (Integer.parseInt(response.body().getType()) == 0) {
+                            if (Integer.parseInt(response.body().getPermission()) == 0) {
                                 permission = "admin";
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 Bundle bundle = new Bundle();

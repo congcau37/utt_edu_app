@@ -146,8 +146,8 @@ public class TestActivity extends AppCompatActivity {
         rdgLevel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                mDataTest.clear();
-                arrTestStatus.clear();
+//                mDataTest.clear();
+//                arrTestStatus.clear();
                 if (checkedId == R.id.rbEasy) {
                     level = "1";
                 } else if (checkedId == R.id.rbMedium) {
@@ -177,6 +177,7 @@ public class TestActivity extends AppCompatActivity {
 
     private void loadTest(String Level) {
         mDataTest.clear();
+//        arrTestStatus.clear();
         mService = ApiUtils.getSOService();
         Map<String, Object> params = new HashMap<>();
         params.put("subjectCode", subCode);
@@ -284,6 +285,7 @@ public class TestActivity extends AppCompatActivity {
         });
     }
 
+    //kiểm tra trạng thái đề thi đã làm hay chưa
     public void checkTestStatus() {
         for (int i = 0; i < mDataTest.size(); i++) {
             mService = ApiUtils.getSOService();
@@ -315,10 +317,6 @@ public class TestActivity extends AppCompatActivity {
         }
     }
 
-    private void loadTestStatus(String testID, final int i) {
-
-    }
-
     private void splitQuestionID(String question_ID) {
         arrQuesID.clear();
         String[] arr = question_ID.split(",");
@@ -344,6 +342,7 @@ public class TestActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(ConstantKey.ACTION_NOTIFY_DATA)) {
+                        mDataTest.clear();
                         int level_current = intent.getIntExtra("level", 0);
                         String screen = intent.getStringExtra("screen");
                         if (screen.equals("add_test")) {
@@ -353,20 +352,23 @@ public class TestActivity extends AppCompatActivity {
                         } else {
                             level_current = Integer.parseInt(level);
                         }
-
-                        setVisibleLoading();
-                        loadTest(String.valueOf(level_current));
-                        switch (level_current + "") {
-                            case "1":
-                                rbEasy.setChecked(true);
-                                break;
-                            case "2":
-                                rbMedium.setChecked(true);
-                                break;
-                            case "3":
-                                rbHard.setChecked(true);
-                                break;
+                        if (!String.valueOf(level_current).equals(level)) {
+                            switch (level_current + "") {
+                                case "1":
+                                    rbEasy.setChecked(true);
+                                    break;
+                                case "2":
+                                    rbMedium.setChecked(true);
+                                    break;
+                                case "3":
+                                    rbHard.setChecked(true);
+                                    break;
+                            }
+                        } else {
+                            setVisibleLoading();
+                            loadTest(String.valueOf(level_current));
                         }
+
                     }
                 }
             };

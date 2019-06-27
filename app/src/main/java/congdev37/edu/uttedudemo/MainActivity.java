@@ -1,5 +1,6 @@
 package congdev37.edu.uttedudemo;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -13,7 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +33,12 @@ import congdev37.edu.uttedudemo.admin.fragment.AccountManagerFragment;
 import congdev37.edu.uttedudemo.admin.fragment.StatisticalManagerFragment;
 import congdev37.edu.uttedudemo.admin.fragment.SubjectManagerFragment;
 import congdev37.edu.uttedudemo.model.Student;
+import congdev37.edu.uttedudemo.model.Subject;
+import congdev37.edu.uttedudemo.response.ResponseMessage;
 import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
 import congdev37.edu.uttedudemo.student.fragment.ChangePasswordFragment;
-import congdev37.edu.uttedudemo.student.fragment.ExerciseFragment;
+import congdev37.edu.uttedudemo.student.fragment.HistoryFragment;
 import congdev37.edu.uttedudemo.student.fragment.ProfileFragment;
 import congdev37.edu.uttedudemo.student.fragment.SubjectFragment;
 import retrofit2.Call;
@@ -47,18 +56,18 @@ public class MainActivity extends AppCompatActivity
     NavigationView navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.titleToolbar)
+    TextView titleToolbar;
 
-    TextView navUsername, navClass, tvClass;
-
+    TextView navUsername, navClass, tvClass,tvPermission;
+    Dialog dialogAddSubject;
     String permission;
     public static String stdCode, stdName;
     List<Student> mData;
     MenuItem menuItemAdd;
 
     SOService mService;
-    @BindView(R.id.titleToolbar)
-    TextView titleToolbar;
-
+    EditText etSubjectName,etSubjectCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +99,12 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
+        //ánh xạ nav header
         navUsername = (TextView) headerView.findViewById(R.id.tvStdName);
         navClass = (TextView) headerView.findViewById(R.id.tvStdClass);
         tvClass = (TextView) headerView.findViewById(R.id.tvClass);
+        tvPermission = (TextView) headerView.findViewById(R.id.tvPermission);
+
         if (permission.equals("admin")) {
             titleToolbar.setText("Quản lý bài test");
             hideFunctionNotAdmin();
@@ -103,6 +115,7 @@ public class MainActivity extends AppCompatActivity
             initFragment(new SubjectFragment());
         }
         if (permission.equals("admin")) {
+            tvPermission.setText("Quản trị viên:");
             tvClass.setVisibility(View.INVISIBLE);
         } else {
             loadContactStudent();
@@ -135,9 +148,9 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
         if (id == R.id.action_Add) {
+            showDialogAddSubject(new Subject("",""));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -167,7 +180,7 @@ public class MainActivity extends AppCompatActivity
             hideItemAdd();
             initFragment(new AccountManagerFragment());
         } else if (id == R.id.navStatistical) {
-            titleToolbar.setText("Thống kê");
+            titleToolbar.setText("Thống kê bài làm");
             hideItemAdd();
             initFragment(new StatisticalManagerFragment());
         } else if (id == R.id.navTest) {
@@ -179,9 +192,9 @@ public class MainActivity extends AppCompatActivity
             hideItemAdd();
             initFragment(new ProfileFragment());
         } else if (id == R.id.navExercise) {
-            titleToolbar.setText("Bài làm");
+            titleToolbar.setText("Lịch sử bài làm");
             hideItemAdd();
-            initFragment(new ExerciseFragment());
+            initFragment(new HistoryFragment());
         } else if (id == R.id.navChangePass) {
             titleToolbar.setText("Đổi mật khẩu");
             hideItemAdd();
@@ -215,6 +228,7 @@ public class MainActivity extends AppCompatActivity
         nav_Menu.findItem(R.id.navExercise).setVisible(false);
     }
 
+    //lây thông tin sinh viên
     private void loadContactStudent() {
         mData = new ArrayList<>();
         mService = ApiUtils.getSOService();
@@ -256,7 +270,144 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void loadContactAdmin() {
+    public void showDialogAddSubject(final Subject subject) {
+        dialogAddSubject = new Dialog(this, R.style.Theme_Dialog);
+        dialogAddSubject.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogAddSubject.setContentView(R.layout.dialog_add_edit_subject);
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialogAddSubject.setCancelable(true);
+        dialogAddSubject.setCanceledOnTouchOutside(true);
 
+        //ánh xạ
+        Button btnNo = dialogAddSubject.findViewById(R.id.btnCancel);
+        Button btnYes = dialogAddSubject.findViewById(R.id.btnSave);
+        ImageView btnTitleClose = dialogAddSubject.findViewById(R.id.btnTitleClose);
+        etSubjectName = dialogAddSubject.findViewById(R.id.etSubjectName);
+        etSubjectCode = dialogAddSubject.findViewById(R.id.etSubjectCode);
+
+        etSubjectName.setText(subject.getSubjectName());
+        etSubjectCode.setText(subject.getSubjectCode());
+        // Chọn có xóa đơn vị
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogAddSubject.dismiss();
+            }
+        });
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String subName = etSubjectName.getText().toString().trim();
+                String subCode = etSubjectCode.getText().toString().trim();
+
+                if (subName.equals("")) {
+                    Toast.makeText(MainActivity.this, "Tên môn học không được để trống", Toast.LENGTH_SHORT).show();
+                    etSubjectName.setError("Không được để trống");
+
+                } else if (subCode.equals("")) {
+                    Toast.makeText(MainActivity.this, "Mã môn học không được để trống", Toast.LENGTH_SHORT).show();
+                    etSubjectName.setError("Không được để trống");
+                }else {
+                    if(subject.getSubjectCode().equals("")){
+                        createSubject(subName,subCode);
+                    }else {
+                        updateSubject(subject.getID(),subName,subCode);
+                    }
+                }
+            }
+        });
+        // Chọn không để đóng dialog
+        btnTitleClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    dialogAddSubject.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        dialogAddSubject.show();
+    }
+
+    //thêm mới môn học
+    private void createSubject(String subName, String subCode) {
+        mService = ApiUtils.getSOService();
+        Map<String, Object> params = new HashMap<>();
+        params.put("subjectName", subName);
+        params.put("subjectCode", subCode);
+        mService.createSubject(params).enqueue(new Callback<ResponseMessage>() {
+            @Override
+            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess() == 1) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_layout);
+                        if (currentFragment != null && currentFragment instanceof SubjectManagerFragment) {
+                            ((SubjectManagerFragment) currentFragment).loadAllSubject();
+                            dialogAddSubject.dismiss();
+                        }
+
+                    } else if(response.body().getSuccess() == 2){
+                        Toast.makeText(MainActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MainActivity.this,response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    int statusCode = response.code();
+                    if (statusCode == 404) {
+                        Toast.makeText(MainActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+
+            }
+        });
+    }
+
+    //sửa môn học
+    private void updateSubject(String ID, String subName, String subCode) {
+        mService = ApiUtils.getSOService();
+        Map<String, Object> params = new HashMap<>();
+        params.put("ID", ID);
+        params.put("subjectName", subName);
+        params.put("subjectCode", subCode);
+        mService.updateSubject(params).enqueue(new Callback<ResponseMessage>() {
+            @Override
+            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess() == 1) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_layout);
+                        if (currentFragment != null && currentFragment instanceof SubjectManagerFragment) {
+                            ((SubjectManagerFragment) currentFragment).loadAllSubject();
+                            dialogAddSubject.dismiss();
+                        }
+
+                    } else if(response.body().getSuccess() == 2){
+                        Toast.makeText(MainActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MainActivity.this,response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    int statusCode = response.code();
+                    if (statusCode == 404) {
+                        Toast.makeText(MainActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+
+            }
+        });
     }
 }

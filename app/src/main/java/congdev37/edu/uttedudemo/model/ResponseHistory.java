@@ -3,14 +3,19 @@ package congdev37.edu.uttedudemo.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResponseHistory {
+import java.io.Serializable;
+
+public class ResponseHistory implements Serializable {
 
     @SerializedName("exID")
     @Expose
     private String exID;
-    @SerializedName("testID")
+    @SerializedName("testName")
     @Expose
-    private String testID;
+    private String testName;
+    @SerializedName("questionID")
+    @Expose
+    private String questionID;
     @SerializedName("studentCode")
     @Expose
     private String studentCode;
@@ -23,32 +28,30 @@ public class ResponseHistory {
     @SerializedName("Score")
     @Expose
     private String score;
-    @SerializedName("testName")
-    @Expose
-    private String testName;
-    @SerializedName("Level")
-    @Expose
-    private String level;
     @SerializedName("subjectCode")
     @Expose
     private String subjectCode;
-
+    @SerializedName("subjectName")
+    @Expose
     private String subjectName;
+    @SerializedName("Level")
+    @Expose
+    private String Level;
 
-    public String getSubjectName() {
-        return subjectName;
+    public String getLevel() {
+        return Level;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setLevel(String level) {
+        Level = level;
     }
 
-    public String getSubjectCode() {
-        return subjectCode;
+    public String getQuestionID() {
+        return questionID;
     }
 
-    public void setSubjectCode(String subjectCode) {
-        this.subjectCode = subjectCode;
+    public void setQuestionID(String questionID) {
+        this.questionID = questionID;
     }
 
     public String getExID() {
@@ -57,14 +60,6 @@ public class ResponseHistory {
 
     public void setExID(String exID) {
         this.exID = exID;
-    }
-
-    public String getTestID() {
-        return testID;
-    }
-
-    public void setTestID(String testID) {
-        this.testID = testID;
     }
 
     public String getStudentCode() {
@@ -107,12 +102,20 @@ public class ResponseHistory {
         this.testName = testName;
     }
 
-    public String getLevel() {
-        return level;
+    public String getSubjectCode() {
+        return subjectCode;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setSubjectCode(String subjectCode) {
+        this.subjectCode = subjectCode;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 
 }

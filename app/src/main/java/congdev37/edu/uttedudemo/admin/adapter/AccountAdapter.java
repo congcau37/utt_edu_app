@@ -80,6 +80,7 @@ public class AccountAdapter extends BaseAdapter {
         ImageView imgEdit,imgDel;
     }
 
+    //tìm kiếm
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
         mData.clear();

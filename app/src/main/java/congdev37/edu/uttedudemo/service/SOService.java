@@ -7,6 +7,7 @@ import java.util.Map;
 import congdev37.edu.uttedudemo.model.Admin;
 import congdev37.edu.uttedudemo.model.Question;
 import congdev37.edu.uttedudemo.model.ResponseHistory;
+import congdev37.edu.uttedudemo.model.Statistical;
 import congdev37.edu.uttedudemo.model.Student;
 import congdev37.edu.uttedudemo.model.Subject;
 import congdev37.edu.uttedudemo.model.Test;
@@ -21,7 +22,7 @@ import retrofit2.http.QueryMap;
 
 public interface SOService {
 
-//        //get
+        //get
         @GET("getTest.php?getTest&format=json")
         Call<List<Test>> getTest(@QueryMap Map<String, Object> option);
 
@@ -39,6 +40,9 @@ public interface SOService {
 //
         @GET("getAllSubject.php?getAllSubject&format=json")
         Call<List<Subject>> getAllSubject(@QueryMap Map<String, Object> option);
+
+        @GET("statistical.php?statistical&format=json")
+        Call<List<Statistical>> statistical(@QueryMap Map<String, Object> option);
 
         @GET("getHistory.php?getHistory&format=json")
         Call<ArrayList<ResponseHistory>> getHistory(@QueryMap Map<String, Object> option);
@@ -89,23 +93,15 @@ public interface SOService {
         Call<ResponseMessage> deleteUser(@FieldMap Map<String, Object> params);
 
         @FormUrlEncoded
-        @POST("saveNewTest.php")
+        @POST("deleteExercise.php")
+        Call<ResponseMessage> deleteExercise(@FieldMap Map<String, Object> params);
+
+        @FormUrlEncoded
+        @POST("createTest.php")
         Call<ResponseMessage> saveNewTest(@FieldMap Map<String, Object> params);
-//
-//        @FormUrlEncoded
-//        @POST("createUser.php")
-//        Call<ResponseMessage> createUser(@FieldMap Map<String, Object> params);
-//
+
         @FormUrlEncoded
         @POST("updateUser.php")
         Call<ResponseMessage> updateUser(@FieldMap Map<String, Object> params);
-
-//        @FormUrlEncoded
-//        @POST("updateTest.php")
-//        Call<ResponseMessage> updateTest(@FieldMap Map<String, Object> params);
-//
-//        @FormUrlEncoded
-//        @POST("savePoint.php")
-//        Call<ResponseMessage> savePoint(@FieldMap Map<String, Object> params);
 
 }

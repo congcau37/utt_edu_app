@@ -53,18 +53,13 @@ public class ScreenSlidePageFragment extends Fragment {
     RadioGroup radGroup;
     @BindView(R.id.content)
     ScrollView content;
+
     Unbinder unbinder;
     private int mPageNumber;
     private int checkAnswwer;
 
-    public ScreenSlidePageFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_screen_slide_page, container, false);
         unbinder = ButterKnife.bind(this, rootView);
@@ -78,11 +73,15 @@ public class ScreenSlidePageFragment extends Fragment {
     }
 
     private void initData() {
-        arr_Ques = new ArrayList<>();
-        ScreenSlideActivity screenSlideActivity = (ScreenSlideActivity) getActivity();
-        arr_Ques = screenSlideActivity.getData();
-        mPageNumber = getArguments().getInt(KEY_PAGE);
-        checkAnswwer = getArguments().getInt(ARG_CHECK_ANSWER);
+        try {
+            arr_Ques = new ArrayList<>();
+            ScreenSlideActivity screenSlideActivity = (ScreenSlideActivity) getActivity();
+            arr_Ques = screenSlideActivity.getData();
+            mPageNumber = getArguments().getInt(KEY_PAGE);
+            checkAnswwer = getArguments().getInt(ARG_CHECK_ANSWER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static ScreenSlidePageFragment create(int pageNumber, int checkAnswer) {
@@ -98,23 +97,29 @@ public class ScreenSlidePageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //
-        tvNum.setText("Câu:" + (mPageNumber + 1));
-        tvQuestion.setText(getItem(mPageNumber).getQuesContent());
-        radA.setText(getItem(mPageNumber).getAnsA());
-        radB.setText(getItem(mPageNumber).getAnsB());
-        radC.setText(getItem(mPageNumber).getAnsC());
-        radD.setText(getItem(mPageNumber).getAnsD());
+        try {
+            tvNum.setText("Câu:" + (mPageNumber + 1));
+            tvQuestion.setText(getItem(mPageNumber).getQuesContent());
+            radA.setText(getItem(mPageNumber).getAnsA());
+            radB.setText(getItem(mPageNumber).getAnsB());
+            radC.setText(getItem(mPageNumber).getAnsC());
+            radD.setText(getItem(mPageNumber).getAnsD());
 
-        radGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                getItem(mPageNumber).choiceID = i;
-                getItem(mPageNumber).setAnswer(getChoiceFromID(i));
-            }
-        });
-
+            //chọn đáp án
+            radGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+    //                getItem(mPageNumber).choiceID = i;
+                    //gán câu trả lời
+                    getItem(mPageNumber).setAnswer(getChoiceFromID(i));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //lấy ra đối tượng câu hỏi hiện tại
     private Question getItem(int i) {
         return arr_Ques.get(i);
     }
@@ -132,26 +137,34 @@ public class ScreenSlidePageFragment extends Fragment {
             return "";
     }
 
+    //set background cho câu trả lời đúng
     private void getCheckAns(String ans) {
-        if (ans.equals("A")) {
-            radA.setBackgroundColor(Color.RED);
-        } else if (ans.equals("B")) {
-            radB.setBackgroundColor(Color.RED);
-        } else if (ans.equals("C")) {
-            radC.setBackgroundColor(Color.RED);
-        } else {
-            radD.setBackgroundColor(Color.RED);
+        switch (ans) {
+            case "A":
+                radA.setBackgroundColor(Color.RED);
+                break;
+            case "B":
+                radB.setBackgroundColor(Color.RED);
+                break;
+            case "C":
+                radC.setBackgroundColor(Color.RED);
+                break;
+            default:
+                radD.setBackgroundColor(Color.RED);
+                break;
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        //kiểm tra nếu khác 0 thì đã kết thúc
         if (checkAnswwer != 0) {
             radA.setClickable(false);
             radB.setClickable(false);
             radC.setClickable(false);
             radD.setClickable(false);
+            //gọi hàm set background câu trả lời đúng
             getCheckAns(getItem(mPageNumber).getAnsCorrect());
         }
     }

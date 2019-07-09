@@ -83,21 +83,22 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
     ImageView ivPlusQues;
     @BindView(R.id.swAutoChoose)
     Switch swAutoChoose;
+    @BindView(R.id.btnExit)
+    Button btnExit;
 
     AlertDialog.Builder builderConfirm;
+    SOService mService;
 
     ArrayList<Question> mDataQuestion, listAllQuestion, mListAllQuestion, listQuestionRandom, listQuestionSelect;
     ArrayList<Test> mDataTest;
     ArrayList<String> arrLevel;
     String questionID;
     String testName, testID;
-    int time = 0, position;
-    public static int Level;
-    int questionNumber;
-    SOService mService;
     String subjectCode;
-    @BindView(R.id.btnExit)
-    Button btnExit;
+    int time = 0, position;
+    int questionNumber;
+    public static int Level;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,147 +109,161 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
         initView();
     }
 
+    //khởi tạo và lấy dữ liệu
     private void initData() {
-        arrLevel = new ArrayList<>();
-        mDataTest = new ArrayList<>();
-        mDataQuestion = new ArrayList<>();
-        listQuestionRandom = new ArrayList<>();
-        listQuestionSelect = new ArrayList<>();
-        listAllQuestion = new ArrayList<>();
-        mListAllQuestion = new ArrayList<>();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            mDataQuestion = bundle.getParcelableArrayList("question");
-            mDataTest = bundle.getParcelableArrayList("test");
-            testName = bundle.getString("test_name");
-            testID = bundle.getString("test_id");
-            position = bundle.getInt("position");
-            time = Integer.parseInt(bundle.getString("timer"));
-        }
-        arrLevel.add("Dễ");
-        arrLevel.add("Trung bình");
-        arrLevel.add("Khó");
-        questionNumber = mDataQuestion.size();
-        questionID = mDataTest.get(position).getQuestionID();
+        try {
+            arrLevel = new ArrayList<>();
+            mDataTest = new ArrayList<>();
+            mDataQuestion = new ArrayList<>();
+            listQuestionRandom = new ArrayList<>();
+            listQuestionSelect = new ArrayList<>();
+            listAllQuestion = new ArrayList<>();
+            mListAllQuestion = new ArrayList<>();
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                mDataQuestion = bundle.getParcelableArrayList("question");
+                mDataTest = bundle.getParcelableArrayList("test");
+                testName = bundle.getString("test_name");
+                testID = bundle.getString("test_id");
+                position = bundle.getInt("position");
+                time = Integer.parseInt(bundle.getString("timer"));
+            }
+            arrLevel.add("Dễ");
+            arrLevel.add("Trung bình");
+            arrLevel.add("Khó");
+            questionNumber = mDataQuestion.size();
+            questionID = mDataTest.get(position).getQuestionID();
 
-        //
-        loadQuestion();
-        listQuestionSelect.addAll(mDataQuestion);
+            //
+            loadQuestion();
+            listQuestionSelect.addAll(mDataQuestion);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
-        btnExit.setVisibility(View.GONE);
-        btnDelete.setVisibility(View.VISIBLE);
-        tvSave.setOnClickListener(this);
-        ivBack.setOnClickListener(this);
-        ivPlus.setOnClickListener(this);
-        ivSub.setOnClickListener(this);
-        tvQuestion.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
-        btnDelete.setOnClickListener(this);
-        swAutoChoose.setOnClickListener(this);
-        ivPlusQues.setOnClickListener(this);
-        ivSubQues.setOnClickListener(this);
-        // hiển thị
-        tvTitleToolbar.setText("Sửa bài test");
-        etTestName.setText(testName);
-        setTextQuestion(mDataQuestion);
-        etQuestionNumber.setText(questionNumber + "");
-        tvSubject.setText(SubjectFragment.subName);
-        etTime.setText(time + "");
-        etTime.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        try {
+            btnExit.setVisibility(View.GONE);
+            btnDelete.setVisibility(View.VISIBLE);
+            tvSave.setOnClickListener(this);
+            ivBack.setOnClickListener(this);
+            ivPlus.setOnClickListener(this);
+            ivSub.setOnClickListener(this);
+            tvQuestion.setOnClickListener(this);
+            btnSave.setOnClickListener(this);
+            btnDelete.setOnClickListener(this);
+            swAutoChoose.setOnClickListener(this);
+            ivPlusQues.setOnClickListener(this);
+            ivSubQues.setOnClickListener(this);
+            // hiển thị
+            tvTitleToolbar.setText("Sửa bài test");
+            etTestName.setText(testName);
+            setTextQuestion(mDataQuestion);
+            etQuestionNumber.setText(questionNumber + "");
+            etTime.setText(time + "");
+            etTime.setSelectAllOnFocus(true);
+            etQuestionNumber.setSelectAllOnFocus(true);
+            tvSubject.setText(SubjectFragment.subName);
+            //bắt sự kiện khi nhập thời gian
+            etTime.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (s.length() < 0 || s.toString().equals("")) {
-                    time = 0;
-                    etTime.setHint("0");
-                } else {
-                    time = Integer.parseInt(s.toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (time < 0) {
-                    time = 0;
-                    etTime.setHint("0");
-                }
-                if (time > 120) {
-                    time = 120;
-                    etTime.setText("120");
                 }
 
-            }
-        });
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-        etQuestionNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (s.length() < 0 || s.toString().equals("")) {
-                    questionNumber = 0;
-                    etQuestionNumber.setHint("0");
-                } else {
-                    questionNumber = Integer.parseInt(String.valueOf(s));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (questionNumber < 0) {
-                    questionNumber = 0;
-                    etQuestionNumber.setHint("0");
-                }
-                if (questionNumber > listAllQuestion.size()) {
-                    questionNumber = listAllQuestion.size();
-                    etQuestionNumber.setText(listAllQuestion.size() + "");
-                }
-                if (questionNumber != 0 || questionNumber != mListAllQuestion.size()) {
-                    if (swAutoChoose.isChecked()) {
-                        setRandomQuestion(questionNumber);
-                    }
-                }
-            }
-        });
-        //
-        spnLevel.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
-        ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrLevel);
-        levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnLevel.setAdapter(levelAdapter);
-        spnLevel.setSelection(Integer.parseInt(TestActivity.level) - 1);
-
-        // tự chọn câu hỏi
-        swAutoChoose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (etQuestionNumber.getText().toString().equals("0") || etQuestionNumber.getText().toString().equals("")) {
-                        Toast.makeText(EditTestActivity.this, "Chưa thiết lập số câu", Toast.LENGTH_SHORT).show();
-                        swAutoChoose.setChecked(false);
+                    if (s.length() < 0 || s.toString().equals("")) {
+                        time = 0;
+                        etTime.setHint("0");
                     } else {
-                        setRandomQuestion(questionNumber);
+                        time = Integer.parseInt(s.toString());
                     }
-                } else {
-                    mDataQuestion.clear();
-                    mDataQuestion.addAll(listQuestionSelect);
-                    setTextQuestion(mDataQuestion);
-                    etQuestionNumber.setText(mDataQuestion.size() + "");
                 }
-            }
-        });
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (time < 0) {
+                        time = 0;
+                        etTime.setHint("0");
+                    }
+                    if (time > 120) {
+                        time = 120;
+                        etTime.setText("120");
+                    }
+
+                }
+            });
+
+            //bắt sự kiện khi nhập số câu
+            etQuestionNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    if (s.length() < 0 || s.toString().equals("")) {
+                        questionNumber = 0;
+                        etQuestionNumber.setHint("0");
+                    } else {
+                        questionNumber = Integer.parseInt(String.valueOf(s));
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (questionNumber < 0) {
+                        questionNumber = 0;
+                        etQuestionNumber.setHint("0");
+                    }
+                    if (questionNumber > listAllQuestion.size()) {
+                        questionNumber = listAllQuestion.size();
+                        etQuestionNumber.setText(listAllQuestion.size() + "");
+                    }
+                    if (questionNumber != 0 || questionNumber != mListAllQuestion.size()) {
+                        if (swAutoChoose.isChecked()) {
+                            setRandomQuestion(questionNumber);
+                        }
+                    }
+                }
+            });
+            //danh sách cấp độ
+            spnLevel.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+            ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrLevel);
+            levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spnLevel.setAdapter(levelAdapter);
+            spnLevel.setSelection(Integer.parseInt(TestActivity.level) - 1);
+
+            // tự chọn câu hỏi
+            swAutoChoose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        if (etQuestionNumber.getText().toString().equals("0") || etQuestionNumber.getText().toString().equals("")) {
+                            Toast.makeText(EditTestActivity.this, "Chưa thiết lập số câu", Toast.LENGTH_SHORT).show();
+                            swAutoChoose.setChecked(false);
+                        } else {
+                            setRandomQuestion(questionNumber);
+                        }
+                    } else {
+                        mDataQuestion.clear();
+                        mDataQuestion.addAll(listQuestionSelect);
+                        setTextQuestion(mDataQuestion);
+                        etQuestionNumber.setText(mDataQuestion.size() + "");
+                    }
+                }
+            });
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
+    //chọn cấp độ
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Level = position + 1;
@@ -258,16 +273,12 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    // sự kiện
+    // sự kiện click
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvQuestion:
-                Intent intent = new Intent(this, ChooseQuestionActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("question", mDataQuestion);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 0);
+                sendChooseQuestion();
                 break;
             case R.id.btnDelete:
                 showDialogDelete();
@@ -281,18 +292,22 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
                     updateTest();
                 }
                 break;
+                //cộng thời gian
             case R.id.ivPlus:
                 etTime.setText(plusTime() + "");
                 break;
+                //trừ thời gian
             case R.id.ivSub:
                 etTime.setText(subTime() + "");
                 break;
+                //cộng số câu
             case R.id.ivPlusQues:
                 etQuestionNumber.setText(plusQuestion() + "");
                 if (swAutoChoose.isChecked()) {
                     setRandomQuestion(questionNumber);
                 }
                 break;
+                //trừ số câu
             case R.id.ivSubQues:
                 etQuestionNumber.setText(subQuestion() + "");
                 if (swAutoChoose.isChecked()) {
@@ -303,51 +318,76 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    //hàm gửi câu hỏi đã chọn
+    private void sendChooseQuestion() {
+        try {
+            Intent intent = new Intent(this, ChooseQuestionActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("question", mDataQuestion);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // dialog xác nhận thoát
     private void showDialogConfirmExit() {
-        builderConfirm = new AlertDialog.Builder(EditTestActivity.this);
-        builderConfirm.setMessage("Bạn có muốn hủy bài test không?");
-        builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
-        builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-        });
-        builderConfirm.show();
+        try {
+            builderConfirm = new AlertDialog.Builder(EditTestActivity.this);
+            builderConfirm.setMessage("Bạn có muốn hủy bài test không?");
+            builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            });
+            builderConfirm.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     // dialog xác nhận txóa
     private void showDialogDelete() {
-        builderConfirm = new AlertDialog.Builder(EditTestActivity.this);
-        builderConfirm.setMessage("Bạn có muốn xóa bài test không?");
-        builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                deleteTest();
-            }
-        });
-        builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-        });
-        builderConfirm.show();
+        try {
+            builderConfirm = new AlertDialog.Builder(EditTestActivity.this);
+            builderConfirm.setMessage("Bạn có muốn xóa bài test không?");
+            builderConfirm.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    deleteTest();
+                }
+            });
+            builderConfirm.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            });
+            builderConfirm.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //hiển thị danh sách câu hỏi đã chọn
     private void setTextQuestion(ArrayList<Question> lisQues) {
         StringBuilder question = new StringBuilder("");
-        for (int i = 0; i < lisQues.size(); i++) {
-            question.append("Câu " + (i + 1) + ": ");
-            question.append(lisQues.get(i).getQuesContent());
+        try {
+            for (int i = 0; i < lisQues.size(); i++) {
+                question.append("Câu " + (i + 1) + ": ");
+                question.append(lisQues.get(i).getQuesContent());
+            }
+            tvQuestion.setText(question.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        tvQuestion.setText(question.toString());
     }
 
     // cộng thời gian
@@ -391,137 +431,154 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
 
     //cập nhật bài test
     private void updateTest() {
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("testID", testID);
-        params.put("questionID", getQuestionID());
-        params.put("subjectCode", subjectCode);
-        params.put("testName", testName);
-        params.put("Level", Level);
-        params.put("Timer", time);
-        params.put("createDay", Converter.setDate());
-        mService.updateTest(params).enqueue(new Callback<ResponseMessage>() {
-            @Override
-            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+        try {
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("testID", testID);
+            params.put("questionID", getQuestionID());
+            params.put("subjectCode", subjectCode);
+            params.put("testName", testName);
+            params.put("Level", Level);
+            params.put("Timer", time);
+            params.put("createDay", Converter.setDate());
+            mService.updateTest(params).enqueue(new Callback<ResponseMessage>() {
+                @Override
+                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
 
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess() == 1) {
-                        Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
-                        intentBroadCast.putExtra("screen", "edit_test");
-                        intentBroadCast.putExtra("level", Level);
-                        sendBroadcast(intentBroadCast);
-                        finish();
+                    if (response.isSuccessful()) {
+                        if (response.body().getSuccess() == 1) {
+                            Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
+                            intentBroadCast.putExtra("screen", "edit_test");
+                            intentBroadCast.putExtra("level", Level);
+                            sendBroadcast(intentBroadCast);
+                            finish();
+                        } else {
+                            Toast.makeText(EditTestActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(EditTestActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    int statusCode = response.code();
-                    if (statusCode == 404) {
-                        Toast.makeText(EditTestActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(EditTestActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                        int statusCode = response.code();
+                        if (statusCode == 404) {
+                            Toast.makeText(EditTestActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditTestActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ResponseMessage> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    //load câu hỏi từ server
+    //load toàn bộ câu hỏi từ server
     private void loadQuestion() {
-        listAllQuestion.clear();
-        mListAllQuestion.clear();
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("subCode", TestActivity.subCode);
-        mService.getAllQuestion(params).enqueue(new Callback<List<Question>>() {
-            @Override
-            public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        Question item = response.body().get(i);
-                        Question questionModel = new Question();
-                        questionModel.setQuestionID(item.getQuestionID());
-                        questionModel.setQuesContent(item.getQuesContent());
-                        questionModel.setSubCode(item.getSubCode());
-                        questionModel.setAnsA(item.getAnsA());
-                        questionModel.setAnsB(item.getAnsB());
-                        questionModel.setAnsC(item.getAnsC());
-                        questionModel.setAnsD(item.getAnsD());
-                        questionModel.setAnsCorrect(item.getAnsCorrect());
-                        listAllQuestion.add(questionModel);
-                        mListAllQuestion.add(questionModel);
+        try {
+            listAllQuestion.clear();
+            mListAllQuestion.clear();
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("subCode", TestActivity.subCode);
+            mService.getAllQuestion(params).enqueue(new Callback<List<Question>>() {
+                @Override
+                public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            Question item = response.body().get(i);
+                            Question questionModel = new Question();
+                            questionModel.setQuestionID(item.getQuestionID());
+                            questionModel.setQuesContent(item.getQuesContent());
+                            questionModel.setSubCode(item.getSubCode());
+                            questionModel.setAnsA(item.getAnsA());
+                            questionModel.setAnsB(item.getAnsB());
+                            questionModel.setAnsC(item.getAnsC());
+                            questionModel.setAnsD(item.getAnsD());
+                            questionModel.setAnsCorrect(item.getAnsCorrect());
+                            listAllQuestion.add(questionModel);
+                            mListAllQuestion.add(questionModel);
+                        }
+                    } else {
+                        int statusCode = response.code();
                     }
-                } else {
-                    int statusCode = response.code();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Question>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<Question>> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //xóa bài test
     private void deleteTest() {
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("testID", testID);
-        mService.deleteTest(params).enqueue(new Callback<ResponseMessage>() {
-            @Override
-            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+        try {
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("testID", testID);
+            mService.deleteTest(params).enqueue(new Callback<ResponseMessage>() {
+                @Override
+                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
 
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess() == 1) {
-                        Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
-                        intentBroadCast.putExtra("screen", "edit_test");
-                        intentBroadCast.putExtra("level", Level);
-                        sendBroadcast(intentBroadCast);
-                        finish();
+                    if (response.isSuccessful()) {
+                        if (response.body().getSuccess() == 1) {
+                            Intent intentBroadCast = new Intent(ConstantKey.ACTION_NOTIFY_DATA);
+                            intentBroadCast.putExtra("screen", "edit_test");
+                            intentBroadCast.putExtra("level", Level);
+                            sendBroadcast(intentBroadCast);
+                            finish();
+                        } else {
+                            Toast.makeText(EditTestActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(EditTestActivity.this, "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    int statusCode = response.code();
-                    if (statusCode == 404) {
-                        Toast.makeText(EditTestActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(EditTestActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                        int statusCode = response.code();
+                        if (statusCode == 404) {
+                            Toast.makeText(EditTestActivity.this, "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditTestActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ResponseMessage> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //kiểm tra form
     private boolean validateForm() {
-        subjectCode = TestActivity.subCode;
-        testName = etTestName.getText().toString().trim();
-        if (testName.equals("")) {
-            Toast.makeText(this, "Tên đề thi không được để trống", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (time == 0) {
-            Toast.makeText(this, "Bạn chưa thiết lập thời gian", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (tvQuestion.getText().toString().equals("")) {
-            Toast.makeText(this, "Bạn chưa chọn câu hỏi", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (Integer.parseInt(etQuestionNumber.getText().toString()) < mDataQuestion.size() || Integer.parseInt(etQuestionNumber.getText().toString()) > mDataQuestion.size()) {
-            Toast.makeText(this, "Tổng số câu phải bằng số câu đã chọn", Toast.LENGTH_SHORT).show();
-            return false;
+        try {
+            subjectCode = TestActivity.subCode;
+            testName = etTestName.getText().toString().trim();
+            if (testName.equals("")) {
+                Toast.makeText(this, "Tên đề thi không được để trống", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if (time == 0) {
+                Toast.makeText(this, "Bạn chưa thiết lập thời gian", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if (tvQuestion.getText().toString().equals("")) {
+                Toast.makeText(this, "Bạn chưa chọn câu hỏi", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if (Integer.parseInt(etQuestionNumber.getText().toString()) < mDataQuestion.size() || Integer.parseInt(etQuestionNumber.getText().toString()) > mDataQuestion.size()) {
+                Toast.makeText(this, "Tổng số câu phải bằng số câu đã chọn", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -531,48 +588,60 @@ public class EditTestActivity extends AppCompatActivity implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            Bundle bd = data.getExtras();
-            if (bd != null) {
-                mDataQuestion.clear();
-                mDataQuestion = bd.getParcelableArrayList("question");
-                setTextQuestion(mDataQuestion);
-                etQuestionNumber.setText(mDataQuestion.size() + "");
+            try {
+                Bundle bd = data.getExtras();
+                if (bd != null) {
+                    mDataQuestion.clear();
+                    mDataQuestion = bd.getParcelableArrayList("question");
+                    setTextQuestion(mDataQuestion);
+                    etQuestionNumber.setText(mDataQuestion.size() + "");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
         }
     }
 
     //set câu hỏi ngẫu nhiên
     private void setRandomQuestion(int numberQuestion) {
-        mDataQuestion.clear();
-        listQuestionRandom.clear();
-        Random rand = new Random();
-        for (int i = 0; i < numberQuestion; i++) {
-            Question question = new Question();
-            try {
-                int randomIndex = rand.nextInt(listAllQuestion.size());
-                question = listAllQuestion.get(randomIndex);
-                listAllQuestion.remove(randomIndex);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            mDataQuestion.clear();
+            listQuestionRandom.clear();
+            Random rand = new Random();
+            for (int i = 0; i < numberQuestion; i++) {
+                Question question = new Question();
+                try {
+                    int randomIndex = rand.nextInt(listAllQuestion.size());
+                    question = listAllQuestion.get(randomIndex);
+                    listAllQuestion.remove(randomIndex);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                listQuestionRandom.add(question);
             }
-            listQuestionRandom.add(question);
+            listAllQuestion.clear();
+            mDataQuestion.addAll(listQuestionRandom);
+            listAllQuestion.addAll(mListAllQuestion);
+            setTextQuestion(mDataQuestion);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        listAllQuestion.clear();
-        mDataQuestion.addAll(listQuestionRandom);
-        listAllQuestion.addAll(mListAllQuestion);
-        setTextQuestion(mDataQuestion);
     }
 
     //conver mảng question sang chuỗi
     private String getQuestionID() {
         questionID = "";
-        for (int i = 0; i < mDataQuestion.size(); i++) {
-            questionID += mDataQuestion.get(i).getQuestionID() + ",";
+        try {
+            for (int i = 0; i < mDataQuestion.size(); i++) {
+                questionID += mDataQuestion.get(i).getQuestionID() + ",";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return questionID;
     }
 
+    //trờ về
     @Override
     public void onBackPressed() {
         showDialogConfirmExit();

@@ -25,19 +25,28 @@ public class Test implements Parcelable, Serializable {
     @SerializedName("Level")
     @Expose
     private String level;
-    @SerializedName("Time")
+    @SerializedName("Timer")
     @Expose
     private String time;
     @SerializedName("createDay")
     @Expose
     private String createDay;
+    @SerializedName("studentCode")
+    @Expose
+    private String studentCode;
+    @SerializedName("studentName")
+    @Expose
+    private String studentName;
+    @SerializedName("exerciseStatus")
+    @Expose
+    private String exerciseStatus;
 
     private boolean testStatus;
 
     public Test() {
     }
 
-    public Test(Parcel in) {
+    private Test(Parcel in) {
         testID = in.readString();
         questionID = in.readString();
         subjectCode = in.readString();
@@ -59,6 +68,30 @@ public class Test implements Parcelable, Serializable {
             return new Test[size];
         }
     };
+
+    public String getExerciseStatus() {
+        return exerciseStatus;
+    }
+
+    public void setExerciseStatus(String exerciseStatus) {
+        this.exerciseStatus = exerciseStatus;
+    }
+
+    public String getStudentCode() {
+        return studentCode;
+    }
+
+    public void setStudentCode(String studentCode) {
+        this.studentCode = studentCode;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 
     public boolean isTestStatus() {
         return testStatus;

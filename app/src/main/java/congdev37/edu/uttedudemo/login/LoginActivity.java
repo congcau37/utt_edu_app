@@ -27,7 +27,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import congdev37.edu.uttedudemo.MainActivity;
+import congdev37.edu.uttedudemo.HomeActivity;
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.model.User;
 import congdev37.edu.uttedudemo.response.ResponseMessage;
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.body().getSuccess() == 1) {
                             if (Integer.parseInt(response.body().getPermission()) == 0) {
                                 permission = "admin";
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("permission", permission);
                                 bundle.putString("code", etAccName.getText().toString());
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                             } else {
                                 permission = "student";
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("permission", permission);
                                 bundle.putString("code", etAccName.getText().toString());
@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.body().getSuccess() == 1) {
                             if (Integer.parseInt(response.body().getPermission()) == 0) {
                                 permission = "admin";
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("permission", permission);
                                 bundle.putString("code", etAccName.getText().toString());
@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                             } else {
                                 permission = "student";
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("permission", permission);
                                 bundle.putString("code", etAccName.getText().toString());

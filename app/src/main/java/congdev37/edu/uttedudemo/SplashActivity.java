@@ -12,7 +12,6 @@ import congdev37.edu.uttedudemo.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

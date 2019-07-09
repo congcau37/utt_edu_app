@@ -1,10 +1,7 @@
 package congdev37.edu.uttedudemo.student.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import congdev37.edu.uttedudemo.MainActivity;
 import congdev37.edu.uttedudemo.R;
-import congdev37.edu.uttedudemo.admin.activity.EditTestActivity;
-import congdev37.edu.uttedudemo.model.Subject;
 import congdev37.edu.uttedudemo.model.Test;
 import congdev37.edu.uttedudemo.student.activity.TestActivity;
 import congdev37.edu.uttedudemo.util.Converter;

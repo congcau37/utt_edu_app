@@ -24,7 +24,7 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/etSearch"
-            android:hint="Tìm kiếm..." />
+            android:hint="Nhập mã sinh viên..." />
     </LinearLayout>
     <ListView
         android:layout_below="@id/lnTop"

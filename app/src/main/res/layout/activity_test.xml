@@ -115,7 +115,6 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-
         <TextView
             android:id="@+id/tvNoHaveTest"
             android:layout_below="@id/view"

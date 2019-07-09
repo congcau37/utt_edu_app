@@ -10,7 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,10 +20,11 @@ import butterknife.Unbinder;
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.model.Subject;
 
-public class SubjectListAdapter extends RecyclerView.Adapter<SubjectListAdapter.ViewHolder> {
+public class SubjectManagerAdapter extends RecyclerView.Adapter<SubjectManagerAdapter.ViewHolder> {
 
     Context mContext;
     List<Subject> mDatasets;
+    List<Subject> list;
     OnClick mOnClick;
     Unbinder unbinder;
 
@@ -29,8 +32,10 @@ public class SubjectListAdapter extends RecyclerView.Adapter<SubjectListAdapter.
         this.mOnClick = mOnClick;
     }
 
-    public SubjectListAdapter(List<Subject> mDatasets) {
+    public SubjectManagerAdapter(List<Subject> mDatasets) {
+        list = new ArrayList<>();
         this.mDatasets = mDatasets;
+        list.addAll(mDatasets);
     }
 
     @NonNull
@@ -85,6 +90,21 @@ public class SubjectListAdapter extends RecyclerView.Adapter<SubjectListAdapter.
                 }
             });
         }
+    }
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        mDatasets.clear();
+        if (charText.length() == 0) {
+            mDatasets.addAll(list);
+        } else {
+            for (Subject model : list) {
+                if (charText.length() != 0 && model.getSubjectCode() != null && model.getSubjectCode().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mDatasets.add(model);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public interface OnClick {

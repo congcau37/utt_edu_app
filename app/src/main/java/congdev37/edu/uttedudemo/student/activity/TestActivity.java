@@ -24,18 +24,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import congdev37.edu.uttedudemo.MainActivity;
+import congdev37.edu.uttedudemo.HomeActivity;
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.admin.activity.AddTestActivity;
 import congdev37.edu.uttedudemo.admin.activity.EditTestActivity;
 import congdev37.edu.uttedudemo.model.Question;
 import congdev37.edu.uttedudemo.model.Test;
-import congdev37.edu.uttedudemo.response.ResponseMessage;
 import congdev37.edu.uttedudemo.service.ApiUtils;
 import congdev37.edu.uttedudemo.service.SOService;
 import congdev37.edu.uttedudemo.student.adapter.TestAdapter;
@@ -78,6 +76,7 @@ public class TestActivity extends AppCompatActivity {
 
     public static String subCode;
     SOService mService;
+    TestAdapter mAdapter;
     List<Test> mDataTest;
     ArrayList<Question> mDataQuestion;
     ArrayList<Question> lisQuestion;
@@ -86,7 +85,6 @@ public class TestActivity extends AppCompatActivity {
     public static String level = "1";
     public static String testName = "";
     boolean check;
-    TestAdapter mAdapter;
     BroadcastReceiver myBroadCast;
 
     @Override
@@ -99,229 +97,244 @@ public class TestActivity extends AppCompatActivity {
         initBroadCast();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private void initData() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            try {
-                level = "1";
-                subCode = bundle.getString("sub_code");
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                try {
+                    level = "1";
+                    subCode = bundle.getString("sub_code");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void initView() {
-        if (!MainActivity.stdCode.equals("admin")) {
-            ivAdd.setVisibility(View.INVISIBLE);
-        }
-        tvTitleToolbar.setText("Bài test");
-        mDataTest = new ArrayList<>();
-        mDataQuestion = new ArrayList<>();
-        arrQuesID = new ArrayList<>();
-        lisQuestion = new ArrayList<>();
-        arrTestStatus = new ArrayList<>();
-        mAdapter = new TestAdapter(mDataTest);
-        mAdapter.setOnClick(new TestAdapter.OnClick() {
-            @Override
-            public void onItemClick(String test_ID, String questionID, String Name, int position) {
-                mDataQuestion.clear();
-                testName = Name;
-                splitQuestionID(questionID);
-                for (int i = 0; i < arrQuesID.size(); i++) {
-                    loadQuestion(arrQuesID.get(i), test_ID, position);
-                }
+        try {
+            if (!HomeActivity.stdCode.equals("admin")) {
+                ivAdd.setVisibility(View.INVISIBLE);
             }
-        });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1);
-        rcvTest.setLayoutManager(gridLayoutManager);
-        rcvTest.setAdapter(mAdapter);
-        rbEasy.setChecked(true);
-        loadTest(level);
-        rdgLevel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                mDataTest.clear();
-//                arrTestStatus.clear();
-                if (checkedId == R.id.rbEasy) {
-                    level = "1";
-                } else if (checkedId == R.id.rbMedium) {
-                    level = "2";
-                } else {
-                    level = "3";
-                }
-                setVisibleLoading();
-                loadTest(level);
-            }
-        });
-
-        //
-        swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadTest(level);
-                        swiperefresh.setRefreshing(false);
+            tvTitleToolbar.setText("Bài test");
+            mDataTest = new ArrayList<>();
+            mDataQuestion = new ArrayList<>();
+            arrQuesID = new ArrayList<>();
+            lisQuestion = new ArrayList<>();
+            arrTestStatus = new ArrayList<>();
+            mAdapter = new TestAdapter(mDataTest);
+            //click bào bài test
+            mAdapter.setOnClick(new TestAdapter.OnClick() {
+                @Override
+                public void onItemClick(String test_ID, String questionID, String Name, int position) {
+                    mDataQuestion.clear();
+                    testName = Name;
+                    //tách chuỗi
+                    splitQuestionID(questionID);
+                    //lấy lần lượt từng câu hỏi theo id rồi thêm vào mảng
+                    for (int i = 0; i < arrQuesID.size(); i++) {
+                        loadQuestion(arrQuesID.get(i), test_ID, position);
                     }
-                }, 1500);
-            }
-        });
+                }
+            });
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1);
+            rcvTest.setLayoutManager(gridLayoutManager);
+            rcvTest.setAdapter(mAdapter);
+            rbEasy.setChecked(true);
+            loadTest(level);
+            rdgLevel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    if (checkedId == R.id.rbEasy) {
+                        level = "1";
+                    } else if (checkedId == R.id.rbMedium) {
+                        level = "2";
+                    } else {
+                        level = "3";
+                    }
+                    setVisibleLoading();
+                    loadTest(level);
+                }
+            });
+
+            //
+            swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadTest(level);
+                            swiperefresh.setRefreshing(false);
+                        }
+                    }, 1500);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Mục đính của methob: lấy ra danh sach bài test thuộc cấp độ đã chọn
+     *
+     * @param Level:cấp độ
+     * @Create_by: trand
+     * @Date: 7/3/2019
+     */
     private void loadTest(String Level) {
-        mDataTest.clear();
-//        arrTestStatus.clear();
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("subjectCode", subCode);
-        params.put("Level", Level);
-        mService.getTest(params).enqueue(new Callback<List<Test>>() {
-            @Override
-            public void onResponse(Call<List<Test>> call, Response<List<Test>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        Test item = response.body().get(i);
-                        Test test = new Test();
-                        test.setTestID(item.getTestID());
-                        test.setTestName(item.getTestName());
-                        test.setLevel(item.getLevel());
-                        test.setQuestionID(item.getQuestionID());
-                        test.setSubjectCode(item.getSubjectCode());
-                        test.setTime(item.getTime());
-                        test.setCreateDay(item.getCreateDay());
-                        mDataTest.add(test);
-                    }
-                    if (mDataTest.size() == response.body().size() && !MainActivity.stdCode.equals("admin")) {
-                        if (mDataTest.size() == 0) {
-                            setInvisibleLoading();
-                            tvNoHaveTest.setVisibility(View.VISIBLE);
-                            mAdapter.notifyDataSetChanged();
+        try {
+            mDataTest.clear();
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("subjectCode", subCode);
+            params.put("studentCode", HomeActivity.stdCode);
+            params.put("Level", Level);
+            mService.getTest(params).enqueue(new Callback<List<Test>>() {
+                @Override
+                public void onResponse(Call<List<Test>> call, Response<List<Test>> response) {
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            Test item = response.body().get(i);
+                            Test test = new Test();
+                            test.setTestID(item.getTestID());
+                            test.setTestName(item.getTestName());
+                            test.setTime(item.getTime());
+                            test.setQuestionID(item.getQuestionID());
+                            test.setStudentCode(item.getStudentCode());
+                            test.setStudentName(item.getStudentName());
+                            test.setExerciseStatus(item.getExerciseStatus());
+                            mDataTest.add(test);
+                        }
+                        //nếu là sinh viên
+                        if (mDataTest.size() == response.body().size() && !HomeActivity.stdCode.equals("admin")) {
+                            if (mDataTest.size() == 0) {
+                                setInvisibleLoading();
+                                tvNoHaveTest.setVisibility(View.VISIBLE);
+                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                //gọi hàm kiểm tra trạng thái bài test
+                                checkTestStatus();
+                                tvNoHaveTest.setVisibility(View.GONE);
+                            }
+                            //admin
                         } else {
-                            arrTestStatus.clear();
-                            arrTestStatus.addAll(mDataTest);
-                            checkTestStatus();
-                            tvNoHaveTest.setVisibility(View.GONE);
+                            setInvisibleLoading();
+                            if (mDataTest.size() == 0) {
+                                tvNoHaveTest.setVisibility(View.VISIBLE);
+                            } else {
+                                tvNoHaveTest.setVisibility(View.GONE);
+                            }
+                            mAdapter.notifyDataSetChanged();
                         }
                     } else {
-                        setInvisibleLoading();
-                        if (mDataTest.size() == 0) {
-                            tvNoHaveTest.setVisibility(View.VISIBLE);
-                        } else {
-                            tvNoHaveTest.setVisibility(View.GONE);
-                        }
-                        mAdapter.notifyDataSetChanged();
+                        int statusCode = response.code();
                     }
-                } else {
-                    int statusCode = response.code();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Test>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<Test>> call, Throwable t) {
 
-            }
-        });
-    }
-
-    private void loadQuestion(String questionID, final String test_ID, final int position) {
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("questionID", questionID);
-        mService.getQuestion(params).enqueue(new Callback<List<Question>>() {
-            @Override
-            public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        Question item = response.body().get(i);
-                        Question questionModel = new Question();
-                        questionModel.setQuestionID(item.getQuestionID());
-                        questionModel.setQuesContent(item.getQuesContent());
-                        questionModel.setSubCode(item.getSubCode());
-                        questionModel.setAnsA(item.getAnsA());
-                        questionModel.setAnsB(item.getAnsB());
-                        questionModel.setAnsC(item.getAnsC());
-                        questionModel.setAnsD(item.getAnsD());
-                        questionModel.setAnsCorrect(item.getAnsCorrect());
-                        mDataQuestion.add(questionModel);
-                    }
-                    if (mDataQuestion.size() == arrQuesID.size() && !MainActivity.stdCode.equals("admin")) {
-                        check = true;
-                        Intent intent = new Intent(TestActivity.this, ScreenSlideActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList("question", mDataQuestion);
-                        bundle.putString("timer", mDataTest.get(position).getTime());
-                        bundle.putString("test_id", test_ID);
-                        bundle.putInt("num_page", mDataQuestion.size());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    } else if (mDataQuestion.size() == arrQuesID.size() && MainActivity.stdCode.equals("admin")) {
-                        Intent intent = new Intent(TestActivity.this, EditTestActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList("question", mDataQuestion);
-                        bundle.putParcelableArrayList("test", (ArrayList<? extends Parcelable>) mDataTest);
-                        bundle.putString("test_name", testName);
-                        bundle.putString("test_id", test_ID);
-                        bundle.putInt("position", position);
-                        bundle.putString("timer", mDataTest.get(position).getTime());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                } else {
-                    int statusCode = response.code();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<List<Question>> call, Throwable t) {
-
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //kiểm tra trạng thái đề thi đã làm hay chưa
     public void checkTestStatus() {
-        for (int i = 0; i < mDataTest.size(); i++) {
+        try {
+            for (int i = 0; i < mDataTest.size(); i++) {
+                if (mDataTest.get(i).getStudentCode() != null) {
+                    if (mDataTest.get(i).getExerciseStatus().equals("0")){
+                        mDataTest.get(i).setTestStatus(true);
+                    }
+                }
+            }
+            setInvisibleLoading();
+            mAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadQuestion(String questionID, final String test_ID, final int position) {
+        try {
             mService = ApiUtils.getSOService();
             Map<String, Object> params = new HashMap<>();
-            params.put("studentCode", MainActivity.stdCode);
-            params.put("testID", mDataTest.get(i).getTestID());
-            final int finalI = i;
-            mService.getExercise(params).enqueue(new Callback<ResponseMessage>() {
+            params.put("questionID", questionID);
+            mService.getQuestion(params).enqueue(new Callback<List<Question>>() {
                 @Override
-                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+                public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
                     if (response.isSuccessful()) {
-                        if (response.body().getSuccess() == 1) {
-                            arrTestStatus.get(finalI).setTestStatus(true);
+                        for (int i = 0; i < response.body().size(); i++) {
+                            Question item = response.body().get(i);
+                            Question questionModel = new Question();
+                            questionModel.setQuestionID(item.getQuestionID());
+                            questionModel.setQuesContent(item.getQuesContent());
+                            questionModel.setSubCode(item.getSubCode());
+                            questionModel.setAnsA(item.getAnsA());
+                            questionModel.setAnsB(item.getAnsB());
+                            questionModel.setAnsC(item.getAnsC());
+                            questionModel.setAnsD(item.getAnsD());
+                            questionModel.setAnsCorrect(item.getAnsCorrect());
+                            mDataQuestion.add(questionModel);
                         }
-                        if (finalI == mDataTest.size() - 1) {
-                            mDataTest.clear();
-                            mDataTest.addAll(arrTestStatus);
-                            setInvisibleLoading();
-                            mAdapter.notifyDataSetChanged();
+                        //quyền sinh viên
+                        //lấy xong câu hỏi chuyển qua màn hình làm bài
+                        if (mDataQuestion.size() == arrQuesID.size() && !HomeActivity.stdCode.equals("admin")) {
+                            check = true;
+                            Intent intent = new Intent(TestActivity.this, ScreenSlideActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelableArrayList("question", mDataQuestion);
+                            bundle.putString("timer", mDataTest.get(position).getTime());
+                            bundle.putString("test_name", testName);
+                            bundle.putString("test_id", test_ID);
+                            bundle.putString("list_question_ID", mDataTest.get(position).getQuestionID());
+                            bundle.putInt("num_page", mDataQuestion.size());
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            //quyền admin
+                            //chuyển qua màn hình sửa
+                        } else if (mDataQuestion.size() == arrQuesID.size() && HomeActivity.stdCode.equals("admin")) {
+                            Intent intent = new Intent(TestActivity.this, EditTestActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelableArrayList("question", mDataQuestion);
+                            bundle.putParcelableArrayList("test", (ArrayList<? extends Parcelable>) mDataTest);
+                            bundle.putString("test_name", testName);
+                            bundle.putString("test_id", test_ID);
+                            bundle.putInt("position", position);
+                            bundle.putString("timer", mDataTest.get(position).getTime());
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                         }
+                    } else {
+                        int statusCode = response.code();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                public void onFailure(Call<List<Question>> call, Throwable t) {
 
                 }
             });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void splitQuestionID(String question_ID) {
-        arrQuesID.clear();
-        String[] arr = question_ID.split(",");
-        for (String name : arr)
-            arrQuesID.add(name);
+        try {
+            arrQuesID.clear();
+            String[] arr = question_ID.split(",");
+            for (String name : arr)
+                arrQuesID.add(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick({R.id.ivBack, R.id.rbEasy, R.id.rbMedium, R.id.rbHard, R.id.rdg_level, R.id.ivAdd})
@@ -336,6 +349,7 @@ public class TestActivity extends AppCompatActivity {
         }
     }
 
+    //khởi tạo BroadCast
     private void initBroadCast() {
         try {
             myBroadCast = new BroadcastReceiver() {
@@ -343,14 +357,17 @@ public class TestActivity extends AppCompatActivity {
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(ConstantKey.ACTION_NOTIFY_DATA)) {
                         mDataTest.clear();
+                        //lấy ra cấp độ
                         int level_current = intent.getIntExtra("level", 0);
+                        //lấy ra màn hình
                         String screen = intent.getStringExtra("screen");
+                        //kiểm tra màn hình nào trả về
                         if (screen.equals("add_test")) {
                             level_current = AddTestActivity.Level;
                         } else if (screen.equals("edit_test")) {
                             level_current = EditTestActivity.Level;
                         } else {
-                            level_current = Integer.parseInt(level);
+                            level_current = Integer.parseInt(level); //level màn hình hiện tại
                         }
                         if (!String.valueOf(level_current).equals(level)) {
                             switch (level_current + "") {

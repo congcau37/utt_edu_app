@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Năm này"
+                android:text="Mọi lúc"
                 />
         </RadioGroup>
 
@@ -53,10 +53,23 @@
 
         <ListView
             android:id="@+id/lv_history"
+            android:divider="@null"
             android:layout_below="@id/rdg_date"
             android:layout_margin="@dimen/app_margin_small"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></ListView>
+
+        <TextView
+            android:id="@+id/tvNoHaveTest"
+            android:layout_below="@id/view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/app_margin_small"
+            android:gravity="center"
+            android:text="Chưa có bài làm!"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/font_size_medium"
+            android:visibility="visible" />
 
         <FrameLayout
             android:id="@+id/pbLoading"

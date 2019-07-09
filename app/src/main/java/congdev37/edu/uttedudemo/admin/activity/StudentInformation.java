@@ -74,70 +74,86 @@ public class StudentInformation extends AppCompatActivity {
     }
 
     private void getData() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            String stdCode = bundle.getString("stdCode");
-            loadProfileStudent(stdCode);
+        try {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                String stdCode = bundle.getString("stdCode");
+                loadProfileStudent(stdCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void initView() {
-        tvstudentCode.setVisibility(View.VISIBLE);
-        tvTecherCode.setVisibility(View.GONE);
-        lnClass.setVisibility(View.VISIBLE);
-
-        mDataStudent = new ArrayList<>();
-        mDataAdmin = new ArrayList<>();
+        try {
+            mDataStudent = new ArrayList<>();
+            mDataAdmin = new ArrayList<>();
+            tvstudentCode.setVisibility(View.VISIBLE);
+            tvTecherCode.setVisibility(View.GONE);
+            lnClass.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initData() {
-        tvName.setText(mDataStudent.get(0).getStdName());
-        tvAddress.setText(mDataStudent.get(0).getAddress());
-        txtStdClass.setText(mDataStudent.get(0).getClass_());
-        tvBirthday.setText(mDataStudent.get(0).getBirthday());
-        tvhone.setText(mDataStudent.get(0).getPhoneNumber());
-        tvCode.setText(mDataStudent.get(0).getStdCode());
-        tvGender.setText(mDataStudent.get(0).getGender());
-        setInvisibleLoading();
+        try {
+            tvName.setText(mDataStudent.get(0).getStdName());
+            tvAddress.setText(mDataStudent.get(0).getAddress());
+            txtStdClass.setText(mDataStudent.get(0).getClass_());
+            tvBirthday.setText(mDataStudent.get(0).getBirthday());
+            tvhone.setText(mDataStudent.get(0).getPhoneNumber());
+            tvCode.setText(mDataStudent.get(0).getStdCode());
+            tvGender.setText(mDataStudent.get(0).getGender());
+            setInvisibleLoading();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //lấy thông tin sinh viên
     private void loadProfileStudent(String stdCode) {
-        mDataStudent.clear();
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("stdCode", stdCode);
-        mService.getStudent(params).enqueue(new Callback<List<Student>>() {
-            @Override
-            public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        try {
-                            Student item = response.body().get(i);
-                            Student student = new Student();
-                            student.setID(item.getID());
-                            student.setStdName(item.getStdName());
-                            student.setStdCode(item.getStdCode());
-                            student.setBirthday(item.getBirthday());
-                            student.setAddress(item.getAddress());
-                            student.setPhoneNumber(item.getPhoneNumber());
-                            student.setClass_(item.getClass_());
-                            student.setGender(item.getGender());
-                            mDataStudent.add(student);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+        try {
+            mDataStudent.clear();
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("stdCode", stdCode);
+            mService.getStudent(params).enqueue(new Callback<List<Student>>() {
+                @Override
+                public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            try {
+                                Student item = response.body().get(i);
+                                Student student = new Student();
+                                student.setID(item.getID());
+                                student.setStdName(item.getStdName());
+                                student.setStdCode(item.getStdCode());
+                                student.setBirthday(item.getBirthday());
+                                student.setAddress(item.getAddress());
+                                student.setPhoneNumber(item.getPhoneNumber());
+                                student.setClass_(item.getClass_());
+                                student.setGender(item.getGender());
+                                mDataStudent.add(student);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
+                        initData();
+                    } else {
+                        int statusCode = response.code();
                     }
-                    initData();
-                } else {
-                    int statusCode = response.code();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Student>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<Student>> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setInvisibleLoading() {

@@ -47,22 +47,22 @@ public class ExerciseAdapter extends BaseAdapter {
             viewHolder= new ViewHolder();
             view = layoutInflater.inflate(layout, null);
             viewHolder.txtSubjectName = (TextView) view.findViewById(R.id.txt_subject_name);
-            viewHolder.txtScore = (TextView) view.findViewById(R.id.txt_score);
-            viewHolder.txtLevel = (TextView) view.findViewById(R.id.txt_level);
-            viewHolder.txtTestName = (TextView) view.findViewById(R.id.txt_test_name);
+            viewHolder.txtScore = (TextView) view.findViewById(R.id.tvScore);
+            viewHolder.txtExDay = (TextView) view.findViewById(R.id.tvExDay);
+            viewHolder.txtLevel = (TextView) view.findViewById(R.id.tvLevel);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
         ResponseHistory history = data.get(i);
-        viewHolder.txtSubjectName.setText(history.getSubjectCode());
+        viewHolder.txtSubjectName.setText(history.getSubjectName());
         viewHolder.txtScore.setText(history.getScore());
+        viewHolder.txtExDay.setText(Converter.setDate(history.getExDay()));
         viewHolder.txtLevel.setText(Converter.convertLevel(history.getLevel()));
-        viewHolder.txtTestName.setText(history.getTestName());
         return view;
     }
 
     public class ViewHolder {
-        TextView txtSubjectName, txtScore,txtLevel, txtTestName;
+        TextView txtSubjectName, txtScore, txtExDay, txtLevel;
     }
 }

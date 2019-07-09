@@ -1,130 +1,139 @@
 package congdev37.edu.uttedudemo.admin.fragment;
 
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
-
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import congdev37.edu.uttedudemo.R;
+import congdev37.edu.uttedudemo.admin.activity.StatisticalChartActivity;
+import congdev37.edu.uttedudemo.admin.adapter.SubjectStatisticalAdapter;
+import congdev37.edu.uttedudemo.model.Subject;
+import congdev37.edu.uttedudemo.service.ApiUtils;
+import congdev37.edu.uttedudemo.service.SOService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class StatisticalManagerFragment extends Fragment {
 
     Unbinder unbinder;
-    @BindView(R.id.rbToday)
-    RadioButton rbToday;
-    @BindView(R.id.rbMonth)
-    RadioButton rbMonth;
-    @BindView(R.id.rbYear)
-    RadioButton rbYear;
-    @BindView(R.id.rdg_date)
-    RadioGroup rdgDate;
-    @BindView(R.id.view)
-    View view;
-    @BindView(R.id.piechart)
-    PieChart pieChart;
+    SOService mService;
+    public ArrayList<Subject> mDataSubject;
+    SubjectStatisticalAdapter mAdapter;
+    @BindView(R.id.rcvSubject)
+    RecyclerView rcvSubject;
 
-    private int[] yData = {12, 30};
-    private String[] xData = {"bài làm của môn", "tổng bài làm"};
-
-
-    public StatisticalManagerFragment() {
-    }
+    @BindView(R.id.pbLoading)
+    FrameLayout pbLoading;
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout swiperefresh;
+    @BindView(R.id.tvNoHaveTest)
+    TextView tvNoHaveTest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistical_manager, container, false);
         unbinder = ButterKnife.bind(this, view);
-        initData();
+        initView(view);
         return view;
     }
 
-    private void initData() {
-        pieChart.setRotationEnabled(true);
-        pieChart.setHoleRadius(25);
-        pieChart.setTransparentCircleAlpha(0);
-        pieChart.setCenterText("Bài làm");
-        pieChart.setCenterTextSize(16);
-        addDataSet();
+    private void initView(View view) {
+        try {
+            mDataSubject = new ArrayList<>();
+            mAdapter = new SubjectStatisticalAdapter(mDataSubject);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+            rcvSubject.setLayoutManager(linearLayoutManager);
+            rcvSubject.setAdapter(mAdapter);
+            //click adapter
+            mAdapter.setOnClick(new SubjectStatisticalAdapter.OnClick() {
+                @Override
+                public void onItemClick(Subject subject) {
+                    Intent intent = new Intent(getContext(), StatisticalChartActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("sub_code", subject.getSubjectCode());
+                    bundle.putString("sub_name", subject.getSubjectName());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
 
-        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-//                int pos1 = e.toString().indexOf("(sum): ");
-//                String quantity = e.toString().substring(pos1 + 1);
-//
-//                for (int i = 0; i < yData.length; i++) {
-//                    if (yData[i] == Integer.parseInt(quantity)) {
-//                        pos1 = i;
-//                        break;
-//                    }
-//                }
-//                String employee = xData[pos1 + 1];
-//                Toast.makeText(getContext(), "Employee " + employee + "\n" + "Sales: $" + quantity + "K", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
+            //sự kiện khi reload
+            swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadAllSubject();
+                            swiperefresh.setRefreshing(false);
+                        }
+                    }, 1500);
+                }
+            });
+            //lấy dữ liệu
+            loadAllSubject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void addDataSet() {
-        ArrayList<PieEntry> yEntrys = new ArrayList<>();
-//        ArrayList<String> xEntrys = new ArrayList<>();
+    //lấy toàn bộ môn học từ server
+    private void loadAllSubject() {
+        try {
+            mDataSubject.clear();
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            mService.getAllSubject(params).enqueue(new Callback<List<Subject>>() {
+                @Override
+                public void onResponse(Call<List<Subject>> call, Response<List<Subject>> response) {
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            Subject item = response.body().get(i);
+                            Subject subject = new Subject();
+                            subject.setID(item.getID());
+                            subject.setSubjectCode(item.getSubjectCode());
+                            subject.setSubjectName(item.getSubjectName());
+                            mDataSubject.add(subject);
+                        }
+                        if (mDataSubject.size() == response.body().size()) {
+                            setInvisibleLoading();
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        int statusCode = response.code();
+                    }
+                }
 
-        for (int i = 0; i < yData.length; i++) {
-            yEntrys.add(new PieEntry(yData[i], i));
+                @Override
+                public void onFailure(Call<List<Subject>> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-//        for (int i = 1; i < xData.length; i++) {
-//            xEntrys.add(xData[i]);
-//        }
-
-        //khởi tạo data set
-        PieDataSet pieDataSet = new PieDataSet(yEntrys, "số lượng bài làm");
-        pieDataSet.setSliceSpace(2);
-        pieDataSet.setValueTextSize(12);
-
-        //thêm màu
-        ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(Color.RED);
-        colors.add(Color.BLUE);
-        pieDataSet.setColors(colors);
-
-        //add legend to chart
-        Legend legend = pieChart.getLegend();
-        legend.setForm(Legend.LegendForm.CIRCLE);
-        legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
-
-        //create pie data object
-        PieData pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieChart.invalidate();
     }
 
     @Override
@@ -132,4 +141,9 @@ public class StatisticalManagerFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+    public void setInvisibleLoading() {
+        pbLoading.setVisibility(View.INVISIBLE);
+    }
 }
+

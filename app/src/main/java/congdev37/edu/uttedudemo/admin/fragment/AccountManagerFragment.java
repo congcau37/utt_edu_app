@@ -55,12 +55,7 @@ public class AccountManagerFragment extends Fragment {
     EditText etSearch;
     @BindView(R.id.lnTop)
     LinearLayout lnTop;
-
     Dialog dialogDelete;
-
-    public AccountManagerFragment() {
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,155 +64,178 @@ public class AccountManagerFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_account_manager, container, false);
         unbinder = ButterKnife.bind(this, view);
         initData();
-        //
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mAdapter.filter(String.valueOf(s));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        lvAccount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getContext(), StudentInformation.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("stdCode",mDataAccount.get(position).getName());
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+        initEvent();
         return view;
     }
 
-    private void initData() {
-        loadDataAccount();
+    //sự kiên nhập
+    private void initEvent() {
+        try {
+            etSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mAdapter.filter(String.valueOf(s));
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+            //click item list gửi dữ liệu sinh viên đi
+            lvAccount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getContext(), StudentInformation.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("stdCode",mDataAccount.get(position).getName());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void loadDataAccount() {
-        mDataAccount = new ArrayList<>();
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("type", 2);
-        mService.getAllAccount(params).enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        User item = response.body().get(i);
-                        User user = new User();
-                        user.setId(item.getId());
-                        user.setName(item.getName());
-                        user.setPassword(item.getPassword());
-                        user.setPermission(item.getPermission());
-                        mDataAccount.add(user);
-                        if (i == response.body().size() - 1) {
-                            mAdapter = new AccountAdapter(getContext(), R.layout.item_account, mDataAccount);
-                            lvAccount.setAdapter(mAdapter);
+    private void initData() {
+        loadAllAccount();
+    }
 
-                            mAdapter.setmItemClick(new AccountAdapter.ItemClick() {
-                                @Override
-                                public void onDeleteUser(User user) {
-                                    showDialogDelete(user);
-                                }
-                            });
+    //lấy toàn bộ tài khoản sinh viên từ server
+    public void loadAllAccount() {
+        try {
+            mDataAccount = new ArrayList<>();
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("permission", 2);
+            mService.getAllAccount(params).enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            User item = response.body().get(i);
+                            User user = new User();
+                            user.setId(item.getId());
+                            user.setName(item.getName());
+                            user.setPassword(item.getPassword());
+                            user.setPermission(item.getPermission());
+                            mDataAccount.add(user);
+                            if (i == response.body().size() - 1) {
+                                mAdapter = new AccountAdapter(getContext(), R.layout.item_account, mDataAccount);
+                                lvAccount.setAdapter(mAdapter);
+
+                                mAdapter.setmItemClick(new AccountAdapter.ItemClick() {
+                                    @Override
+                                    public void onDeleteUser(User user) {
+                                        showDialogDelete(user);
+                                    }
+                                });
+                            }
                         }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //dialog xóa tài khoản
     private void showDialogDelete(final User user) {
-        dialogDelete = new Dialog(getContext(), R.style.Theme_Dialog);
-        dialogDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogDelete.setContentView(R.layout.dialog_delete);
-        getActivity().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        dialogDelete.setCancelable(true);
-        dialogDelete.setCanceledOnTouchOutside(true);
+        try {
+            dialogDelete = new Dialog(getContext(), R.style.Theme_Dialog);
+            dialogDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialogDelete.setContentView(R.layout.dialog_delete);
+            getActivity().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            dialogDelete.setCancelable(true);
+            dialogDelete.setCanceledOnTouchOutside(true);
 
-        //ánh xạ
-        Button btnNo = dialogDelete.findViewById(R.id.btnNo);
-        Button btnYes = dialogDelete.findViewById(R.id.btnYes);
-        ImageView btnTitleClose = dialogDelete.findViewById(R.id.btnTitleClose);
-        final TextView tvConfirm = dialogDelete.findViewById(R.id.tvConfirm);
+            //ánh xạ
+            Button btnNo = dialogDelete.findViewById(R.id.btnNo);
+            Button btnYes = dialogDelete.findViewById(R.id.btnYes);
+            ImageView btnTitleClose = dialogDelete.findViewById(R.id.btnTitleClose);
+            final TextView tvConfirm = dialogDelete.findViewById(R.id.tvConfirm);
 
-        //Hiển thị text theo đúng định dạng bằng html
-        tvConfirm.setText(getString(R.string.you_can_delete_user));
+            //Hiển thị text theo đúng định dạng bằng html
+            tvConfirm.setText(getString(R.string.you_can_delete_user));
 
-        // Chọn có xóa đơn vị
-        btnNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogDelete.dismiss();
-            }
-        });
-        btnYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteUser(user);
-            }
-        });
-        // Chọn không để đóng dialog
-        btnTitleClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
+            // Chọn có xóa đơn vị
+            btnNo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     dialogDelete.dismiss();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-        dialogDelete.show();
-    }
-
-    private void deleteUser(User user) {
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", user.getName());
-        mService.deleteUser(params).enqueue(new Callback<ResponseMessage>() {
-            @Override
-            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess() == 1) {
-                        loadDataAccount();
+            });
+            btnYes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteUser(user);
+                }
+            });
+            // Chọn không để đóng dialog
+            btnTitleClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
                         dialogDelete.dismiss();
-                    } else {
-                        Toast.makeText(getContext(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    int statusCode = response.code();
-                    if (statusCode == 404) {
-                        Toast.makeText(getContext(), "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseMessage> call, Throwable t) {
-
-            }
-        });
+            });
+            dialogDelete.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //hàm xóa tài khoản
+    private void deleteUser(User user) {
+        try {
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", user.getName());
+            mService.deleteUser(params).enqueue(new Callback<ResponseMessage>() {
+                @Override
+                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+
+                    if (response.isSuccessful()) {
+                        if (response.body().getSuccess() == 1) {
+                            loadAllAccount();
+                            dialogDelete.dismiss();
+                        } else {
+                            Toast.makeText(getContext(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        int statusCode = response.code();
+                        if (statusCode == 404) {
+                            Toast.makeText(getContext(), "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseMessage> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onDestroyView() {

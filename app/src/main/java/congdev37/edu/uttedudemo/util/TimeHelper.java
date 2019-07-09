@@ -24,16 +24,18 @@ public class TimeHelper {
         return instance;
     }
 
+    //hôm nay
     public TimeInterval getToday() {
         TimeInterval interval = new TimeInterval();
         Calendar calendar = Calendar.getInstance();
         String time = simple.format(calendar.getTime());
         interval.setStartTime(time);
-        interval.setEndTime(time);
+        interval.setEndTime("today");
         interval.setType(0);
         return interval;
     }
 
+    //tuần này
     public TimeInterval getThisWeek() {
         TimeInterval interval = new TimeInterval();
         Calendar calendar = Calendar.getInstance();
@@ -50,6 +52,7 @@ public class TimeHelper {
         return interval;
     }
 
+    //tháng này
     public TimeInterval getThisMonth() {
         TimeInterval interval = new TimeInterval();
         Calendar calendar = Calendar.getInstance();
@@ -61,6 +64,7 @@ public class TimeHelper {
         return interval;
     }
 
+    // 7 ngày gần đây
     public TimeInterval get7Days() {
         TimeInterval interval = new TimeInterval();
         Calendar calendar = Calendar.getInstance();
@@ -71,6 +75,7 @@ public class TimeHelper {
         return interval;
     }
 
+    //30 ngày
     public TimeInterval get30Days() {
         TimeInterval interval = new TimeInterval();
         Calendar calendar = Calendar.getInstance();
@@ -81,6 +86,7 @@ public class TimeHelper {
         return interval;
     }
 
+    //mọi lúc
     public TimeInterval getAll() {
         TimeInterval interval = new TimeInterval();
         interval.setStartTime("");

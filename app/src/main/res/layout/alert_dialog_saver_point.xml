@@ -120,7 +120,7 @@
             android:text="Cấp độ" />
 
         <TextView
-            android:id="@+id/txt_level"
+            android:id="@+id/tvExDay"
             android:textSize="@dimen/font_size_medium"
             android:layout_margin="@dimen/app_margin_small"
             android:textColor="@color/colorBlack"

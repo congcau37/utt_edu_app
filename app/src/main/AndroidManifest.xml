@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".admin.activity.StudentInformation"></activity>
+        <activity android:name=".student.activity.DetailExerciseActivity"></activity>
+        <activity android:name=".admin.activity.StatisticalChartActivity" />
+        <activity android:name=".admin.activity.StudentInformation" />
         <activity android:name=".admin.activity.ChooseQuestionActivity" />
         <activity android:name=".admin.activity.EditTestActivity" />
         <activity android:name=".admin.activity.AddTestActivity" />
@@ -22,7 +24,7 @@
         <activity android:name=".student.activity.TestDoneActivity" />
         <activity android:name=".student.slide.ScreenSlideActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".login.LoginActivity">
             <intent-filter>
@@ -33,7 +35,7 @@
         </activity>
         <activity
             android:name=".login.ScanBarcodeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".SplashActivity"></activity>
     </application>
 

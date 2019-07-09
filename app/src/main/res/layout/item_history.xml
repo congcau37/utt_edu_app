@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_margin="@dimen/app_margin_small"
@@ -13,33 +13,34 @@
             android:id="@+id/ln1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/app_margin_small"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mã môn: "
+                    android:text="Môn học: "
                     android:textSize="@dimen/font_size_small" />
 
                 <TextView
                     android:id="@+id/txt_subject_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12/12/12"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/colorBlack"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textSize="@dimen/font_size_small" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/app_margin_small"
                 android:layout_weight="1"
                 android:gravity="center_vertical">
@@ -51,12 +52,11 @@
                     android:textSize="@dimen/font_size_small" />
 
                 <TextView
-                    android:id="@+id/txt_score"
+                    android:id="@+id/tvScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="10/10"
-                    android:textColor="@color/colorAccent" />
+                    android:textColor="@color/color_red" />
             </LinearLayout>
         </LinearLayout>
 
@@ -64,11 +64,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ln1"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/app_margin_small"
+                android:layout_weight="2"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ngày làm: "
+                    android:textSize="@dimen/font_size_small" />
+
+                <TextView
+                    android:id="@+id/tvExDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/font_size_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/app_margin_small"
                 android:layout_weight="1"
                 android:gravity="center_vertical">
@@ -80,34 +101,13 @@
                     android:textSize="@dimen/font_size_small" />
 
                 <TextView
-                    android:id="@+id/txt_level"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dễ"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/font_size_small" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_margin="@dimen/app_margin_small"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tên đề:  "
-                    android:textSize="@dimen/font_size_small" />
-
-                <TextView
-                    android:id="@+id/txt_test_name"
+                    android:id="@+id/tvLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="10/10"
-                    android:textColor="@color/colorAccent" />
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorBlack" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

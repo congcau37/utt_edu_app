@@ -19,4 +19,5 @@
     <string name="question_number">%d (câu)</string>
     <string name="you_can_delete_user">Bạn có chắc chắn muốn xóa tài khoản này không?</string>
     <string name="you_can_delete_subject">Bạn có chắc chắn muốn xóa môn học này không?</string>
+    <string name="you_can_delete_exercise">Bạn có chắc chắn muốn xóa bài làm này không?</string>
 </resources>

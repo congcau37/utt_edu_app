@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,11 +47,6 @@ public class SubjectFragment extends Fragment {
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
 
-    public SubjectFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -68,21 +64,25 @@ public class SubjectFragment extends Fragment {
     }
 
     private void initView(View view) {
-        mDataSubject = new ArrayList<>();
-        mAdapter = new SubjectAdapter(mDataSubject);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 1);
-        rcvTest.setLayoutManager(gridLayoutManager);
-        rcvTest.setAdapter(mAdapter);
-        mAdapter.setOnClick(new SubjectAdapter.OnClick() {
-            @Override
-            public void onItemClick(String subCode) {
-                Intent intent = new Intent(getContext(), TestActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("sub_code", subCode);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+        try {
+            mDataSubject = new ArrayList<>();
+            mAdapter = new SubjectAdapter(mDataSubject);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+            rcvTest.setLayoutManager(linearLayoutManager);
+            rcvTest.setAdapter(mAdapter);
+            mAdapter.setOnClick(new SubjectAdapter.OnClick() {
+                @Override
+                public void onItemClick(String subCode) {
+                    Intent intent = new Intent(getContext(), TestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("sub_code", subCode);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initData() {
@@ -90,32 +90,36 @@ public class SubjectFragment extends Fragment {
     }
 
     private void loadAllSubject() {
-        mService = ApiUtils.getSOService();
-        Map<String, Object> params = new HashMap<>();
-        mService.getAllSubject(params).enqueue(new Callback<List<Subject>>() {
-            @Override
-            public void onResponse(Call<List<Subject>> call, Response<List<Subject>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        Subject item = response.body().get(i);
-                        Subject subject = new Subject();
-                        subject.setID(item.getID());
-                        subject.setSubjectCode(item.getSubjectCode());
-                        subject.setSubjectName(item.getSubjectName());
-                        mDataSubject.add(subject);
+        try {
+            mService = ApiUtils.getSOService();
+            Map<String, Object> params = new HashMap<>();
+            mService.getAllSubject(params).enqueue(new Callback<List<Subject>>() {
+                @Override
+                public void onResponse(Call<List<Subject>> call, Response<List<Subject>> response) {
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            Subject item = response.body().get(i);
+                            Subject subject = new Subject();
+                            subject.setID(item.getID());
+                            subject.setSubjectCode(item.getSubjectCode());
+                            subject.setSubjectName(item.getSubjectName());
+                            mDataSubject.add(subject);
+                        }
+                        setInvisibleLoading();
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        int statusCode = response.code();
                     }
-                    setInvisibleLoading();
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    int statusCode = response.code();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Subject>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<Subject>> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

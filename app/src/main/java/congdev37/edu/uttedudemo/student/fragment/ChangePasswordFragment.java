@@ -21,7 +21,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import congdev37.edu.uttedudemo.MainActivity;
+import congdev37.edu.uttedudemo.HomeActivity;
 import congdev37.edu.uttedudemo.R;
 import congdev37.edu.uttedudemo.model.User;
 import congdev37.edu.uttedudemo.response.ResponseMessage;
@@ -55,18 +55,13 @@ public class ChangePasswordFragment extends Fragment {
     AppCompatButton ibtSave;
     Unbinder unbinder;
 
-    public ChangePasswordFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_account, container, false);
+        view = inflater.inflate(R.layout.fragment_change_password, container, false);
         unbinder = ButterKnife.bind(this, view);
-        stdCode = MainActivity.stdCode;
+        stdCode = HomeActivity.stdCode;
         mService = ApiUtils.getSOService();
         initData();
         initView();
@@ -74,106 +69,126 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void initData() {
-        dataUser = new ArrayList<>();
-        getUser();
+        try {
+            dataUser = new ArrayList<>();
+            getUser();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
-        btnSave = view.findViewById(R.id.ibt_save);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveChangeAccount();
-            }
-        });
+        try {
+            btnSave = view.findViewById(R.id.ibt_save);
+            btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    saveChangeAccount();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getUser() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", stdCode);
-        mService.getUser(params).enqueue(new Callback<ArrayList<User>>() {
-            @Override
-            public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
-                if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        User item = response.body().get(i);
-                        User user = new User();
-                        user.setId(item.getId());
-                        user.setName(item.getName());
-                        user.setPassword(item.getPassword());
-                        dataUser.add(user);
-                    }
-                } else {
-                    int statusCode = response.code();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<User>> call, Throwable t) {
-
-            }
-        });
-    }
-
-    private void saveChangeAccount() {
-        String oldPassword = etOldpassword.getText().toString();
-        String newPassword = etNewPassword.getText().toString();
-        if (oldPassword.equals("")) {
-            Toast.makeText(getActivity(), "Vui lòng nhập mật khẩu cũ", Toast.LENGTH_SHORT).show();
-            etOldpassword.setError("không được bỏ trống");
-            etOldPasswordReEnter.setError("không được bỏ trống");
-
-        }else if(etNewPassword.equals("")){
-            etNewPassword.setError("không được bỏ trống");
-        }
-
-        else if (oldPassword.equals(dataUser.get(0).getPassword())) {
-            mService = ApiUtils.getSOService();
+        try {
             Map<String, Object> params = new HashMap<>();
-            params.put("updateUser", oldPassword);
-            params.put("old_password", oldPassword);
-            params.put("new_password", newPassword);
             params.put("name", stdCode);
-            mService.updateUser(params).enqueue(new Callback<ResponseMessage>() {
+            mService.getUser(params).enqueue(new Callback<ArrayList<User>>() {
                 @Override
-                public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-
+                public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
                     if (response.isSuccessful()) {
-                        if (response.body().getSuccess() == 1) {
-                            Toast.makeText(getActivity(), "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
-                            initFragment(new SubjectFragment());
-
-                        } else if (response.body().getSuccess() == 0) {
-                            Toast.makeText(getActivity(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
+                        for (int i = 0; i < response.body().size(); i++) {
+                            User item = response.body().get(i);
+                            User user = new User();
+                            user.setId(item.getId());
+                            user.setName(item.getName());
+                            user.setPassword(item.getPassword());
+                            dataUser.add(user);
                         }
                     } else {
                         int statusCode = response.code();
-                        if (statusCode == 404) {
-                            Toast.makeText(getActivity(), "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Lỗi", Toast.LENGTH_SHORT).show();
-                        }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResponseMessage> call, Throwable t) {
+                public void onFailure(Call<ArrayList<User>> call, Throwable t) {
 
                 }
             });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        } else {
-            Toast.makeText(getActivity(), "Mật khẩu cũ không chính xác", Toast.LENGTH_SHORT).show();
+    private void saveChangeAccount() {
+        try {
+            String oldPassword = etOldpassword.getText().toString();
+            String newPassword = etNewPassword.getText().toString();
+            if (oldPassword.equals("")) {
+                Toast.makeText(getActivity(), "Vui lòng nhập mật khẩu cũ", Toast.LENGTH_SHORT).show();
+                etOldpassword.setError("không được bỏ trống");
+                etOldPasswordReEnter.setError("không được bỏ trống");
 
+            }else if(etNewPassword.equals("")){
+                etNewPassword.setError("không được bỏ trống");
+            }
+
+            else if (oldPassword.equals(dataUser.get(0).getPassword())) {
+                mService = ApiUtils.getSOService();
+                Map<String, Object> params = new HashMap<>();
+                params.put("updateUser", oldPassword);
+                params.put("old_password", oldPassword);
+                params.put("new_password", newPassword);
+                params.put("name", stdCode);
+                mService.updateUser(params).enqueue(new Callback<ResponseMessage>() {
+                    @Override
+                    public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
+
+                        if (response.isSuccessful()) {
+                            if (response.body().getSuccess() == 1) {
+                                Toast.makeText(getActivity(), "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
+                                initFragment(new SubjectFragment());
+
+                            } else if (response.body().getSuccess() == 0) {
+                                Toast.makeText(getActivity(), "Lỗi: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        } else {
+                            int statusCode = response.code();
+                            if (statusCode == 404) {
+                                Toast.makeText(getActivity(), "Lỗi : Không thể kết nối tới máy chủ ", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Lỗi", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseMessage> call, Throwable t) {
+
+                    }
+                });
+
+            } else {
+                Toast.makeText(getActivity(), "Mật khẩu cũ không chính xác", Toast.LENGTH_SHORT).show();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     void initFragment(Fragment fragment) {
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, fragment);
-        ft.commit();
+        try {
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, fragment);
+            ft.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

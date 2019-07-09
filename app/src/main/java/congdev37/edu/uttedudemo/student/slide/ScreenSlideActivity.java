@@ -31,13 +31,10 @@ import congdev37.edu.uttedudemo.student.adapter.CheckAnswerAdapter;
 
 public class ScreenSlideActivity extends FragmentActivity {
 
-    private static int NUM_PAGES;
     @BindView(R.id.ivBack)
     ImageView ivBack;
     @BindView(R.id.tvStatus)
     TextView tvStatus;
-    public static String testID = "";
-
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
     private ArrayList<Question> listQuestion;
@@ -46,118 +43,154 @@ public class ScreenSlideActivity extends FragmentActivity {
     private GridView gvCheckAnswer;
     private Button btnCloseGrv, btnFinishGrv;
     private ImageView imgBack;
-    private CounterClass timer;
-    private int numExam, chekAns = 0;
-    private int totalTimemer;
 
+    public static String testID = "";
+    public static String testName = "";
+    public static String questionID = "";
+    private CounterClass timer;
+    private int chekAns = 0;
+    private int totalTimemer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_slide);
         ButterKnife.bind(this);
-        initControls();
+        initView();
         initEvent();
     }
 
+    private void initView() {
+        try {
+            mPager = (ViewPager) findViewById(R.id.pager);
+            tvTimer = (TextView) findViewById(R.id.tvTimer);
+            tvKiemTra = (TextView) findViewById(R.id.tvKiemTra);
+            imgBack = (ImageView) findViewById(R.id.ivBack);
+            tvXemDiem = (TextView) findViewById(R.id.tvScore);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initEvent() {
-        imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogExit();
-            }
-        });
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-        //
-        getDataQuestion();
-        tvKiemTra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkAnswer();
-            }
-        });
-        tvXemDiem = (TextView) findViewById(R.id.tvScore);
-        tvXemDiem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                Intent intent1 = new Intent(ScreenSlideActivity.this, TestDoneActivity.class);
-                startActivity(intent1);
-            }
-        });
+        try {
+            //trờ về
+            imgBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogExit();
+                }
+            });
+            //khởi tạo pager adapter
+            mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+            mPager.setAdapter(mPagerAdapter);
+            mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+            //gọi hàm lấy danh sách câu hỏi chuyển sang
+            getDataQuestion();
+            //kiểm tra
+            tvKiemTra.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //gọi hàm hiển thị dilog danh sach câu đã làm và chưa làm
+                    checkAnswer();
+                }
+            });
+            //xem điểm đóng màn hình hiện tại và đi tới kết quả
+            tvXemDiem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                    Intent intent1 = new Intent(ScreenSlideActivity.this, TestDoneActivity.class);
+                    startActivity(intent1);
+                }
+            });
 
-        timer = new CounterClass(totalTimemer * 60 * 1000, 1000);
-        tvTimer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        timer.start();
+            //khởi tạo thời gian đếm ngược
+            timer = new CounterClass(totalTimemer * 60 * 1000, 1000);
+            //bắt đầu
+            timer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //lấy danh sách câu hỏi gửi sang
     private void getDataQuestion() {
-        final Intent intent = getIntent();
-        final Bundle bundle = intent.getExtras();
-        listQuestion = new ArrayList<Question>();
-        listQuestion = bundle.getParcelableArrayList("question");
-        totalTimemer = Integer.parseInt(bundle.getString("timer"));
-        testID = bundle.getString("test_id");
+        try {
+            final Intent intent = getIntent();
+            final Bundle bundle = intent.getExtras();
+            listQuestion = new ArrayList<Question>();
+            listQuestion = bundle.getParcelableArrayList("question");
+            totalTimemer = Integer.parseInt(bundle.getString("timer"));
+            testID = bundle.getString("test_id");
+            testName = bundle.getString("test_name");
+            questionID = bundle.getString("list_question_ID");
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void initControls() {
-        mPager = (ViewPager) findViewById(R.id.pager);
-        tvTimer = (TextView) findViewById(R.id.tvTimer);
-        tvKiemTra = (TextView) findViewById(R.id.tvKiemTra);
-        imgBack = (ImageView) findViewById(R.id.ivBack);
-    }
-
+    //trả về danh sach câu hỏi
     public ArrayList<Question> getData() {
         return listQuestion;
     }
 
+    //trờ về
     @Override
     public void onBackPressed() {
-        if (mPager.getCurrentItem() == 0) {
-            dialogExit();
-        } else {
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        try {
+            if (mPager.getCurrentItem() == 0) {
+                dialogExit();
+            } else {
+                mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    //dialog thoát
     public void dialogExit() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ScreenSlideActivity.this);
-//        builder.setIcon(R.drawable.exit);
-        builder.setTitle("Thông báo");
-        builder.setMessage("Bạn có muốn hủy bài không");
-        builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                timer.cancel();
-                finish();
-            }
-        });
-        builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        try {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ScreenSlideActivity.this);
+            builder.setTitle("Thông báo");
+            builder.setMessage("Bạn có muốn hủy bài không");
+            builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    timer.cancel();
+                    finish();
+                }
+            });
+            builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-            }
-        });
-        builder.show();
+                }
+            });
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * class adapter pager
+     * @Create_by: trand
+     * @Date: 7/3/2019
+     */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
+        //lấy ra item trả về là fragment
         @Override
         public Fragment getItem(int position) {
             return ScreenSlidePageFragment.create(position, chekAns);
         }
 
+        //lấy số trang
         @Override
         public int getCount() {
             final Intent intent = getIntent();
@@ -167,6 +200,7 @@ public class ScreenSlideActivity extends FragmentActivity {
         }
     }
 
+    //hiệu ứng chuyển tiếp
     public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
         private static final float MIN_SCALE = 0.85f;
         private static final float MIN_ALPHA = 0.5f;
@@ -204,48 +238,60 @@ public class ScreenSlideActivity extends FragmentActivity {
         }
     }
 
+    //danh sách câu trả lời
     public void checkAnswer() {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.check_dialog_choice);
-        dialog.setTitle("Danh sách câu trả lời");
-        gvCheckAnswer = (GridView) dialog.findViewById(R.id.grv_choice);
-        btnCloseGrv = (Button) dialog.findViewById(R.id.btn_close_grv);
-        btnFinishGrv = (Button) dialog.findViewById(R.id.btn_finish_grv);
-        checkAnswerAdapter = new CheckAnswerAdapter(getApplication(), R.layout.item_dialog_choice, listQuestion);
-        gvCheckAnswer.setAdapter(checkAnswerAdapter);
-        gvCheckAnswer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mPager.setCurrentItem(i);
-                dialog.dismiss();
-            }
-        });
-        btnCloseGrv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btnFinishGrv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timer.cancel();
-                result();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-
+        try {
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.check_dialog_choice);
+            dialog.setTitle("Danh sách câu trả lời");
+            gvCheckAnswer = (GridView) dialog.findViewById(R.id.grv_choice);
+            btnCloseGrv = (Button) dialog.findViewById(R.id.btn_close_grv);
+            btnFinishGrv = (Button) dialog.findViewById(R.id.btn_finish_grv);
+            checkAnswerAdapter = new CheckAnswerAdapter(getApplication(), R.layout.item_dialog_choice, listQuestion);
+            gvCheckAnswer.setAdapter(checkAnswerAdapter);
+            //click vào item câu
+            gvCheckAnswer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //trở về page tại câu đã chọn
+                    mPager.setCurrentItem(i);
+                    dialog.dismiss();
+                }
+            });
+            btnCloseGrv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            btnFinishGrv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    timer.cancel();
+                    endTest();
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void result() {
-        chekAns = 1;
-        mPager.setCurrentItem(0);
-        tvKiemTra.setVisibility(View.GONE);
-        tvXemDiem.setVisibility(View.VISIBLE);
-        tvStatus.setText("Kết thúc");
+    //kết thúc
+    public void endTest() {
+        try {
+            chekAns = 1;
+            mPager.setCurrentItem(0);
+            tvKiemTra.setVisibility(View.GONE);
+            tvXemDiem.setVisibility(View.VISIBLE);
+            tvStatus.setText("Kết thúc");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    //lớp xử lý đếm ngược
     public class CounterClass extends CountDownTimer {
 
         public CounterClass(long millisInFuture, long countDownInterval) {
@@ -261,10 +307,13 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public void onFinish() {
-            tvTimer.setText("00:00");
-            Intent intent = new Intent(ScreenSlideActivity.this, TestDoneActivity.class);
-            startActivity(intent);
-
+            try {
+                tvTimer.setText("00:00");
+                Intent intent = new Intent(ScreenSlideActivity.this, TestDoneActivity.class);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
